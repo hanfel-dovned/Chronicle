@@ -5,21 +5,25 @@
 +$  versioned-state
   $%  state-0
   ==
-+$  state-0  [%0 =newsfeed]
++$  state-0  [%0 newsfeed=feed]
 +$  card  card:agent:gall
 -- 
 %-  agent:dbug
 =|  state-0
 =*  state  -
 ^-  agent:gall
-=<
 |_  =bowl:gall
 +*  this      .
     def   ~(. (default-agent this %.n) bowl)
     hc    ~(. +> bowl)
 ++  on-init
   ^-  (quip card _this)
-  :_  this(newsfeed ~['hello' 'world' 'these' 'are' 'links'])
+  :_  %=  this
+        newsfeed  
+        :~  ['google.com' 'warpzone' ~2022.8.30..20.47.00..6d01 ~zod 1 2 %.n %.n %.n %.n]
+            ['facebook.com' 'warpzone' ~2021.8.30..20.47.00..6d01 ~bus 3 2 %.n %.n %.n %.n]
+        ==
+      ==
   :~
     :*  %pass  /eyre/connect  %arvo  %e 
         %connect  `/apps/chronicle  %chronicle
@@ -77,42 +81,35 @@
           ~
         [%html chronicle-ui]  
         ::
-    ::      [%apps %chroncile %state ~]
-    ::    :_  state
-    ::    %-  send
-    ::    :+  200   
-    ::      ~ 
-    ::    [%json (enjs-state [settings game-state gameboard])]
+          [%apps %chronicle %state ~]
+        :_  state
+        %-  send
+        :+  200   
+          ~ 
+        [%json (enjs-state newsfeed)]
       ==
     ==
   ::              
   ++  enjs-state
     =,  enjs:format
-    |=  $:  
-            settings=[width=@ud height=@ud mines=@ud]
-            game-state=[reveals=@ud win=? lose=?]
-            grid=(list [revealed=? flagged=? mine=? neighbors=@ud])
-        ==
+    |=  fee=feed
     ^-  json
     :-  %a
-    :~ 
-      (numb width:settings)
-      (numb height:settings)
-      (numb mines:settings)
-      (numb reveals:game-state)
-      [%b win:game-state]
-      [%b lose:game-state]
-      :-  %a
-      %+  turn
-        grid
-      |=  tile=[revealed=? flagged=? mine=? neighbors=@ud]
-      :-  %a
-      :~
-          [%b revealed:tile]
-          [%b flagged:tile]
-          [%b mine:tile]
-          (numb neighbors:tile)
-      ==
+    %+  turn
+      fee
+    |=  lin=link
+    :-  %a
+    :~
+      [%s url:lin]
+      [%s group:lin]
+      [%s (scot %da date:lin)]
+      [%s (scot %p poster:lin)]
+      [%n (scot %ud likes:lin)]
+      [%n (scot %ud dislikes:lin)]
+      [%b liked:lin]
+      [%b disliked:lin]
+      [%b saved:lin]
+      [%b featured:lin]
     ==
   --
 ::

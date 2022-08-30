@@ -1,8 +1,271 @@
 <head>
+  <style>
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 4px 16px 16px;
+    gap: 7px;
+    
+    width: 778px;
+    height: 554px;
+        
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 1;
+}
+
+main {
+    box-sizing: border-box;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+    gap: 20px;
+    
+    width: 746px;
+    height: 534px;
+    
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.09);
+    border-radius: 9px;
+        
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 1;
+}
+
+h1 {
+    width: 77px;
+    height: 21px;
+    
+    font-family: 'Arial';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    
+    color: rgba(51, 51, 51, 0.9);
+        
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+
+#article-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 16px;
+    
+    width: 714px;
+    height: 158px;
+    
+    
+    /* Inside auto layout */
+    
+    flex: none;
+    order: 3;
+    flex-grow: 0;
+}
+
+.article {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 10px;
+    
+    width: 714px;
+    height: 71px;
+        
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.article-text-box {    
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 8px;
+    
+    width: 578px;
+    height: 71px;
+        
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.article-text {
+    width: 578px;
+    height: 42px;
+    
+    font-family: 'Arial';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    
+    color: #333333;
+    
+    
+    /* Inside auto layout */
+    
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.article-text:hover {
+    color: #777777;
+}
+
+.article-meta {    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 10px;
+    
+    width: 578px;
+    height: 17px;
+        
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.article-meta-text {
+    font-family: 'Arial';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    
+    display: flex;
+    align-items: center;
+    
+    color: rgba(51, 51, 51, 0.7);
+        
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.thumbnail {
+    width: 126px;
+    height: 71px;
+    
+    background: url(image.png);
+    border-radius: 6px;
+    
+    /* Inside auto layout */
+    
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+</style>
 </head>
 
 <body>
   <main>
       <h1>Timeline</h1>
+      <div id="article-list"></div>
+      <script>
+
+var urli = 0;
+var groupi = 1;
+var datei = 2;
+var posteri = 3;
+var likesi = 4;
+var dislikesi = 5;
+var likedi = 6;
+var dislikedi = 7;
+var savedi = 8;
+var featuredi = 9;
+
+async function getState() {
+    const response = await fetch('/apps/chronicle/state')
+    return response.json()
+}
+
+async function createFeed(links) {
+    const ArticleList = document.getElementById("article-list");
+
+    for(var i = 0; i < links.length; i++)
+    {
+        const newArticle = document.createElement("div");
+        newArticle.classList.add("article");
+
+        const articleTextBox = document.createElement("div");
+        articleTextBox.classList.add("article-text-box");
+        
+        const articleText = document.createElement("a");
+        articleText.classList.add("article-text");
+        //articleText.textContent = links[i][0]; Post title goes here
+        articleText.textContent = links[i][0];
+        articleText.setAttribute('href', links[i][urli]);
+
+        const articleMeta = document.createElement("div");
+        articleMeta.classList.add("article-meta");
+
+
+        const date = document.createElement("div");
+        date.classList.add("article-meta-text");
+        date.textContent = links[i][datei];
+        articleMeta.appendChild(date);
+        
+        const author = document.createElement("div");
+        author.classList.add("article-meta-text");
+        //author.textContent = links[i][posteri]; Site goes here
+        author.textContent = "Washington Post"
+        articleMeta.appendChild(author);
+
+        const poster = document.createElement("div");
+        poster.classList.add("article-meta-text");
+        poster.textContent = links[i][posteri];
+        articleMeta.appendChild(poster);
+
+        const thumbnail = document.createElement("img");
+        thumbnail.classList.add("thumbnail");
+        //thumbnail.setAttribute('src', links[i][5]);   Thumbnail goes here
+        thumbnail.setAttribute('src', "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg");
+        
+        newArticle.appendChild(thumbnail);
+
+        articleTextBox.appendChild(articleText);
+        articleTextBox.appendChild(articleMeta);
+        
+        newArticle.appendChild(articleTextBox);
+        
+        ArticleList.appendChild(newArticle);
+    }
+}
+
+
+var state = getState()
+    .then((state) => createFeed(state))
+
+      </script>
   </main>
 </body>
+
+
