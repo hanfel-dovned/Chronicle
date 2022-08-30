@@ -1,0 +1,9 @@
+:~  title+'Chronicle'
+    info+'Aggregate links from your groups.'
+    color+0x10.0032
+    base+'chronicle'
+    site+/apps/chronicle
+    version+[1 0 0]
+    website+'https://urbit.org/grants'
+    license+'MIT'
+==
