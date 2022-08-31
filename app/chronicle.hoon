@@ -20,8 +20,10 @@
   ^-  (quip card _this)
   :_  %=  this
         newsfeed  
-        :~  ['google.com' 'warpzone' ~2022.8.30..20.47.00..6d01 ~zod 1 2 %.n %.n %.n %.n]
-            ['facebook.com' 'warpzone' ~2021.8.30..20.47.00..6d01 ~bus 3 2 %.n %.n %.n %.n]
+        :~  ['http://google.com' 'warpzone' ~2022.8.30..20.47.00..6d01 ~zod 1 2 %.n %.n %.n %.n]
+            ['http://facebook.com' 'warpzone' ~2021.8.30..20.47.00..6d01 ~bus 3 2 %.n %.n %.n %.n]
+            ['http://bebo.com' 'temple' ~2021.8.30..20.47.00..6d01 ~bus 3 2 %.n %.n %.n %.n]
+            ['http://myspace.com' 'temple' ~2021.8.30..20.47.00..6d01 ~bus 3 2 %.n %.n %.n %.n]
         ==
       ==
   :~

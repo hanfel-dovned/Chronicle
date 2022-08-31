@@ -188,6 +188,9 @@ h1 {
 <body>
   <main>
       <h1>Timeline</h1>
+      <select id="groupChooser" onchange="filterByGroup();">
+        <option value="All">All</option>
+      </select>
       <div id="article-list"></div>
       <script>
 
@@ -202,13 +205,46 @@ var dislikedi = 7;
 var savedi = 8;
 var featuredi = 9;
 
+getState()
+    .then((links) => renderPage(links))
+
 async function getState() {
     const response = await fetch('/apps/chronicle/state')
     return response.json()
 }
 
-async function createFeed(links) {
+var originalLinks = []
+async function renderPage(links)
+{
+    originalLinks = links;
+    fillGroupChooser(links);
+    displayFeed(links);
+}
+
+function fillGroupChooser(links) {
+    var chooser = document.getElementById("groupChooser")
+    var groups = []
+
+    for(var i = 0; i < links.length; i++)
+    {
+        if(!groups.includes(links[i][groupi]))
+        {
+            groups.push(links[i][groupi])
+
+            const newOption = document.createElement("option");
+            newOption.text = links[i][groupi]
+            newOption.value = links[i][groupi]
+            chooser.appendChild(newOption)
+        }
+    }
+}
+
+function displayFeed(links) {
     const ArticleList = document.getElementById("article-list");
+
+    while (ArticleList.firstChild) {
+        ArticleList.removeChild(ArticleList.firstChild);
+    }
 
     for(var i = 0; i < links.length; i++)
     {
@@ -235,7 +271,7 @@ async function createFeed(links) {
         
         const author = document.createElement("div");
         author.classList.add("article-meta-text");
-        //author.textContent = links[i][posteri]; Site goes here
+        //author.textContent = links[i][posteri]; Site name goes here
         author.textContent = "Washington Post"
         articleMeta.appendChild(author);
 
@@ -261,8 +297,22 @@ async function createFeed(links) {
 }
 
 
-var state = getState()
-    .then((state) => createFeed(state))
+var currentLinks = []
+function filterByGroup() {
+    var group = document.getElementById("groupChooser").value;
+    currentLinks = filterLinks(originalLinks, group);
+    displayFeed(currentLinks);
+}
+
+function filterLinks(links, group) {
+    var newLinks = []
+
+    for(var i = 0; i < links.length; i++)
+      if(links[i][groupi] == group || group == "All")
+        newLinks.push(links[i])
+
+    return newLinks;
+}
 
       </script>
   </main>
