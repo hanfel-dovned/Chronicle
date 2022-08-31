@@ -173,7 +173,7 @@ h1 {
     width: 126px;
     height: 71px;
     
-    background: url(image.png);
+    /* background: url(image.png); */
     border-radius: 6px;
     
     /* Inside auto layout */
@@ -190,9 +190,31 @@ h1 {
       <h1>Timeline</h1>
       <select id="groupChooser" onchange="filterByGroup();">
         <option value="All">All</option>
+        <option value="Saved">Saved</option>
+      </select>
+      <select id="dateChooser" onchange="filterByDate();">
+        <option value="Chrono">Chronological</option>
+        <option value="Day">Most Popular - Past Day</option>
+        <option value="Week">Most Popular - Past Week</option>
+        <option value="Month">Most Popular - Past Month</option>
+        <option value="All-time">Most Popular - All-time</option>
       </select>
       <div id="article-list"></div>
       <script>
+
+// From urbit/api
+function daToDate(st) {
+  const dub = function (n) {
+    return parseInt(n) < 10 ? "0" + parseInt(n) : n.toString();
+  };
+  const da = st.split("..");
+  const bigEnd = da[0].split(".");
+  const lilEnd = da[1].split(".");
+  const ds = `${bigEnd[0].slice(1)}-${dub(bigEnd[1])}-${dub(bigEnd[2])}T${dub(
+    lilEnd[0]
+  )}:${dub(lilEnd[1])}:${dub(lilEnd[2])}Z`;
+  return new Date(ds);
+}
 
 var urli = 0;
 var groupi = 1;
@@ -214,9 +236,14 @@ async function getState() {
 }
 
 var originalLinks = []
+var currentLinks = []
 async function renderPage(links)
 {
+    for(var i = 0; i < links.length; i++)
+        links[i][datei] = daToDate(links[i][datei])
+
     originalLinks = links;
+    currentLinks = links;
     fillGroupChooser(links);
     displayFeed(links);
 }
@@ -266,7 +293,7 @@ function displayFeed(links) {
 
         const date = document.createElement("div");
         date.classList.add("article-meta-text");
-        date.textContent = links[i][datei];
+        date.textContent = links[i][datei].toLocaleDateString();;
         articleMeta.appendChild(date);
         
         const author = document.createElement("div");
@@ -296,8 +323,6 @@ function displayFeed(links) {
     }
 }
 
-
-var currentLinks = []
 function filterByGroup() {
     var group = document.getElementById("groupChooser").value;
     currentLinks = filterLinks(originalLinks, group);
@@ -308,10 +333,42 @@ function filterLinks(links, group) {
     var newLinks = []
 
     for(var i = 0; i < links.length; i++)
-      if(links[i][groupi] == group || group == "All")
+    {
+      if(links[i][groupi] == group || group == "All" || (group == "Saved" && links[i][savedi] == true))
         newLinks.push(links[i])
+    }
 
     return newLinks;
+}
+
+function filterByDate() {
+    var timeframe = document.getElementById("dateChooser").value;
+    var d = new Date;
+    
+    var dateLinks = [];
+
+    for(var i = 0; i < currentLinks.length; i++)
+    {
+        if(timeframe == "Chrono" || timeframe == "All-time")
+            dateLinks.push(currentLinks[i])
+
+        if(timeframe == "Day")
+            if(currentLinks[i][datei] > d - 86400000)
+                dateLinks.push(currentLinks[i])
+
+        if(timeframe == "Week")
+            if(currentLinks[i][datei] > d - 604800000)
+                dateLinks.push(currentLinks[i])
+
+        if(timeframe == "Month")
+            if(currentLinks[i][datei] > d - 2629800000)
+                dateLinks.push(currentLinks[i])
+    }
+
+    //if timeframe == chrono, sort dateLinks by date
+    //else, sort dateLinks by likes - dislikes
+
+    displayFeed(dateLinks);
 }
 
       </script>
