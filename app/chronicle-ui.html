@@ -14,6 +14,8 @@ body {
     order: 1;
     align-self: stretch;
     flex-grow: 1;
+
+    margin:auto;
 }
 
 main {
@@ -56,6 +58,26 @@ h1 {
     flex: none;
     order: 0;
     flex-grow: 0;
+}
+
+select {
+  font-family: 'Arial';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+
+  color: rgba(51, 51, 51, 0.9);
+
+  border: none;
+  outline: none;
+}
+
+select:hover {
+    color: #777777;
+}
+
+.titleSelect {
+  font-size: 42px;
 }
 
 
@@ -187,17 +209,17 @@ h1 {
 
 <body>
   <main>
-      <h1>Timeline</h1>
-      <select id="groupChooser" onchange="filterByGroup();">
-        <option value="All">All</option>
-        <option value="Saved">Saved</option>
+      <select id="groupChooser" class="titleSelect" onchange="filterByGroup();">
+        <option value="All">All Links</option>
+        <option value="Saved">Saved Links</option>
       </select>
+      <div id="featured-list"></div>
       <select id="dateChooser" onchange="filterByDate();">
         <option value="Chrono">Chronological</option>
-        <option value="Day">Most Popular - Past Day</option>
-        <option value="Week">Most Popular - Past Week</option>
-        <option value="Month">Most Popular - Past Month</option>
-        <option value="All-time">Most Popular - All-time</option>
+        <option value="Day">Popular (Day)</option>
+        <option value="Week">Popular (Week)</option>
+        <option value="Month">Popular (Month)</option>
+        <option value="All-time">Popular (All-time)</option>
       </select>
       <div id="article-list"></div>
       <script>
@@ -242,6 +264,8 @@ async function renderPage(links)
     for(var i = 0; i < links.length; i++)
         links[i][datei] = daToDate(links[i][datei])
 
+    links.sort(sortByDate);
+
     originalLinks = links;
     currentLinks = links;
     fillGroupChooser(links);
@@ -268,9 +292,14 @@ function fillGroupChooser(links) {
 
 function displayFeed(links) {
     const ArticleList = document.getElementById("article-list");
+    const FeaturedList = document.getElementById("featured-list");
+    const group = document.getElementById("groupChooser").value;
 
     while (ArticleList.firstChild) {
         ArticleList.removeChild(ArticleList.firstChild);
+    }
+    while (FeaturedList.firstChild) {
+        FeaturedList.removeChild(FeaturedList.firstChild);
     }
 
     for(var i = 0; i < links.length; i++)
@@ -317,9 +346,12 @@ function displayFeed(links) {
         articleTextBox.appendChild(articleText);
         articleTextBox.appendChild(articleMeta);
         
-        newArticle.appendChild(articleTextBox);
+        newArticle.appendChild(articleTextBox); 
         
-        ArticleList.appendChild(newArticle);
+        if(group != "All" && group != "Saved" && links[i][featuredi] == true)
+          FeaturedList.appendChild(newArticle);
+        else
+          ArticleList.appendChild(newArticle);
     }
 }
 
@@ -349,26 +381,51 @@ function filterByDate() {
 
     for(var i = 0; i < currentLinks.length; i++)
     {
-        if(timeframe == "Chrono" || timeframe == "All-time")
+        if(timeframe == "Chrono" || timeframe == "All-time" || currentLinks[i][featuredi] == true)
             dateLinks.push(currentLinks[i])
-
-        if(timeframe == "Day")
+        else if(timeframe == "Day")
+        {
             if(currentLinks[i][datei] > d - 86400000)
                 dateLinks.push(currentLinks[i])
-
-        if(timeframe == "Week")
+        }
+        else if(timeframe == "Week")
+        {
             if(currentLinks[i][datei] > d - 604800000)
                 dateLinks.push(currentLinks[i])
-
-        if(timeframe == "Month")
+        }
+        else if(timeframe == "Month")
+        {
             if(currentLinks[i][datei] > d - 2629800000)
                 dateLinks.push(currentLinks[i])
+        }
     }
 
-    //if timeframe == chrono, sort dateLinks by date
-    //else, sort dateLinks by likes - dislikes
+    //if(timeframe == "Chrono")
+    //  dateLinks.sort(sortByDate);
+    // currentLinks should already be sorted by date, so these will be too
+
+    if(timeframe != "Chrono")
+      dateLinks.sort(sortByLikes);
 
     displayFeed(dateLinks);
+}
+
+function sortByDate(a, b) {
+    if (a[datei] === b[datei]) {
+        return 0;
+    }
+    else {
+        return (a[datei] < b[datei]) ? 1 : -1;
+    }
+}
+
+function sortByLikes(a, b) {
+    if ((a[likesi] - a[dislikesi]) === (b[likesi] - b[dislikesi])) {
+        return 0;
+    }
+    else {
+        return ((a[likesi] - a[dislikesi]) < (b[likesi] - b[dislikesi])) ? 1 : -1;
+    }
 }
 
       </script>
