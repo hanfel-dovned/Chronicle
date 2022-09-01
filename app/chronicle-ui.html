@@ -248,6 +248,7 @@ var likedi = 6;
 var dislikedi = 7;
 var savedi = 8;
 var featuredi = 9;
+var indexi = 10;
 
 getState()
     .then((links) => renderPage(links))
@@ -262,7 +263,10 @@ var currentLinks = []
 async function renderPage(links)
 {
     for(var i = 0; i < links.length; i++)
+    {
         links[i][datei] = daToDate(links[i][datei])
+        links[i].push(i)
+    }
 
     links.sort(sortByDate);
 
@@ -347,12 +351,29 @@ function displayFeed(links) {
         articleTextBox.appendChild(articleMeta);
         
         newArticle.appendChild(articleTextBox); 
+
+        const favoriteButton = document.createElement("button");
+        favoriteButton.trueIndex = links[i][indexi]; //this needs to be a unique hash for this link
+        favoriteButton.addEventListener('click', favorite);
+
+        newArticle.appendChild(favoriteButton);
         
         if(group != "All" && group != "Saved" && links[i][featuredi] == true)
           FeaturedList.appendChild(newArticle);
         else
           ArticleList.appendChild(newArticle);
     }
+}
+
+function favorite(){
+    var index = event.currentTarget.trueIndex;
+    var link;
+
+    for(var i = 0; i < originalLinks.length; i++)
+      if(originalLinks[i][indexi] == index)
+        link = originalLinks[i];
+
+    console.log(link);
 }
 
 function filterByGroup() {
