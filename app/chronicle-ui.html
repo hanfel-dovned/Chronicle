@@ -368,6 +368,7 @@ function displayFeed(links) {
 
     for(var i = 0; i < links.length; i++)
     {
+      //much of the code between these two branches is redundant
       if(group != "All" && group != "Saved" && links[i][featuredi] == true)
       {
           const newArticle = document.createElement("div");
