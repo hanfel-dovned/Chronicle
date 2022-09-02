@@ -90,12 +90,24 @@ select:hover {
     
     width: 714px;
     height: 158px;
-    
-    
-    /* Inside auto layout */
-    
+        
     flex: none;
     order: 3;
+    flex-grow: 0;
+}
+
+#featured-list {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 14px;
+
+    width: 730px;
+
+    flex: none;
+    order: 0;
+    align-self: stretch;
     flex-grow: 0;
 }
 
@@ -204,6 +216,53 @@ select:hover {
     order: 0;
     flex-grow: 0;
 }
+
+.featured {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 10px;
+
+    width: 227px;
+    height: 173px;
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.featured-thumbnail {
+    width: 227px;
+    height: 115px;
+
+    background: url(image.png);
+    border-radius: 6px;
+
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.featured-textbox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 6px;
+
+    width: 227px;
+    height: 48px;
+
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+
+
 </style>
 </head>
 
@@ -214,6 +273,7 @@ select:hover {
         <option value="Saved">Saved Links</option>
       </select>
       <div id="featured-list"></div>
+      <br>
       <select id="dateChooser" onchange="filterByDate();">
         <option value="Chrono">Chronological</option>
         <option value="Day">Popular (Day)</option>
@@ -308,6 +368,40 @@ function displayFeed(links) {
 
     for(var i = 0; i < links.length; i++)
     {
+      if(group != "All" && group != "Saved" && links[i][featuredi] == true)
+      {
+          const newArticle = document.createElement("div");
+          newArticle.classList.add("featured");
+
+          const thumbnail = document.createElement("img");
+          thumbnail.classList.add("featured-thumbnail");
+          thumbnail.setAttribute('src', "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg");
+          newArticle.appendChild(thumbnail);
+
+          const articleTextBox = document.createElement("div");
+          articleTextBox.classList.add("article-text-box");
+
+          const articleText = document.createElement("a");
+          articleText.classList.add("article-text");
+          //articleText.textContent = links[i][0]; Post title goes here
+          articleText.textContent = links[i][0];
+          articleText.setAttribute('href', links[i][urli]);
+
+          const articleMeta = document.createElement("div");
+          articleMeta.classList.add("article-meta");
+          const metaText = document.createElement("div");
+          metaText.classList.add("article-meta-text");
+          metaText.textContent = links[i][datei].toLocaleDateString() + " - Washington Post - " + links[i][posteri];
+          articleMeta.appendChild(metaText);
+
+          articleTextBox.appendChild(articleText);
+          articleTextBox.appendChild(articleMeta);    
+          newArticle.appendChild(articleTextBox); 
+
+          FeaturedList.appendChild(newArticle);
+      }
+      else
+      {
         const newArticle = document.createElement("div");
         newArticle.classList.add("article");
 
@@ -322,46 +416,29 @@ function displayFeed(links) {
 
         const articleMeta = document.createElement("div");
         articleMeta.classList.add("article-meta");
-
-
-        const date = document.createElement("div");
-        date.classList.add("article-meta-text");
-        date.textContent = links[i][datei].toLocaleDateString();;
-        articleMeta.appendChild(date);
-        
-        const author = document.createElement("div");
-        author.classList.add("article-meta-text");
-        //author.textContent = links[i][posteri]; Site name goes here
-        author.textContent = "Washington Post"
-        articleMeta.appendChild(author);
-
-        const poster = document.createElement("div");
-        poster.classList.add("article-meta-text");
-        poster.textContent = links[i][posteri];
-        articleMeta.appendChild(poster);
+        const metaText = document.createElement("div");
+        metaText.classList.add("article-meta-text");
+        metaText.textContent = links[i][datei].toLocaleDateString() + " - Washington Post - " + links[i][posteri];
+        articleMeta.appendChild(metaText);
 
         const thumbnail = document.createElement("img");
         thumbnail.classList.add("thumbnail");
         //thumbnail.setAttribute('src', links[i][5]);   Thumbnail goes here
         thumbnail.setAttribute('src', "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg");
         
-        newArticle.appendChild(thumbnail);
-
-        articleTextBox.appendChild(articleText);
-        articleTextBox.appendChild(articleMeta);
-        
-        newArticle.appendChild(articleTextBox); 
-
         const favoriteButton = document.createElement("button");
-        favoriteButton.trueIndex = links[i][indexi]; //this needs to be a unique hash for this link
+        favoriteButton.trueIndex = links[i][indexi];
         favoriteButton.addEventListener('click', favorite);
 
-        newArticle.appendChild(favoriteButton);
-        
-        if(group != "All" && group != "Saved" && links[i][featuredi] == true)
-          FeaturedList.appendChild(newArticle);
-        else
-          ArticleList.appendChild(newArticle);
+        newArticle.appendChild(thumbnail);
+        articleTextBox.appendChild(articleText);
+        articleTextBox.appendChild(articleMeta);
+        newArticle.appendChild(articleTextBox); 
+        newArticle.appendChild(favoriteButton); 
+
+
+        ArticleList.appendChild(newArticle);
+      }
     }
 }
 
