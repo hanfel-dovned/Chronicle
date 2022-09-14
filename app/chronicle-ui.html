@@ -28,7 +28,6 @@ main {
     gap: 20px;
     
     width: 746px;
-    height: 534px;
     
     background: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.09);
@@ -89,7 +88,6 @@ select:hover {
     gap: 16px;
     
     width: 714px;
-    height: 158px;
         
     flex: none;
     order: 3;
@@ -119,7 +117,7 @@ select:hover {
     gap: 10px;
     
     width: 714px;
-    height: 71px;
+    height: 100px;
         
     flex: none;
     order: 0;
@@ -134,7 +132,7 @@ select:hover {
     gap: 8px;
     
     width: 578px;
-    height: 71px;
+    height: 90px;
         
     flex: none;
     order: 1;
@@ -177,7 +175,7 @@ select:hover {
     padding: 0px;
     gap: 10px;
     
-    width: 578px;
+    width: 300px;
     height: 17px;
         
     flex: none;
@@ -203,9 +201,26 @@ select:hover {
     flex-grow: 0;
 }
 
+.button-holder {    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 10px;
+    
+    width: 200px;
+    height: 17px;
+        
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
 .thumbnail {
-    width: 126px;
-    height: 71px;
+    width: 160px;
+    height: 100px;
     
     /* background: url(image.png); */
     border-radius: 6px;
@@ -260,6 +275,28 @@ select:hover {
     align-self: stretch;
     flex-grow: 0;
 }
+
+.button {
+    border: none;
+    color: white;
+    padding: 1px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 50px;
+    height: 20px;
+}
+
+.save-button {background-color: #4CAF50;}
+.save-button:hover { background-color: #3e8a40;}
+.like-button {background-color: #4287f5;}
+.like-button:hover { background-color: #2d77ed;}
+.dislike-button {background-color: #ed2d2d;}
+.dislike-button:hover { background-color: #c91c1c; }
 
 
 
@@ -371,87 +408,183 @@ function displayFeed(links) {
       //much of the code between these two branches is redundant
       if(group != "All" && group != "Saved" && links[i][featuredi] == true)
       {
-          const newArticle = document.createElement("div");
-          newArticle.classList.add("featured");
+        const newArticle = document.createElement("div");
+            newArticle.classList.add("featured");
 
-          const thumbnail = document.createElement("img");
-          thumbnail.classList.add("featured-thumbnail");
-          thumbnail.setAttribute('src', "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg");
-          newArticle.appendChild(thumbnail);
+            const thumbnail = document.createElement("img");
+                thumbnail.classList.add("featured-thumbnail");
+                thumbnail.setAttribute('src', "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg");
+            newArticle.appendChild(thumbnail);
 
-          const articleTextBox = document.createElement("div");
-          articleTextBox.classList.add("article-text-box");
+            articleTextBox = createArticleTextBox(links, i);
+            newArticle.appendChild(articleTextBox); 
 
-          const articleText = document.createElement("a");
-          articleText.classList.add("article-text");
-          //articleText.textContent = links[i][0]; Post title goes here
-          articleText.textContent = links[i][0];
-          articleText.setAttribute('href', links[i][urli]);
-
-          const articleMeta = document.createElement("div");
-          articleMeta.classList.add("article-meta");
-          const metaText = document.createElement("div");
-          metaText.classList.add("article-meta-text");
-          metaText.textContent = links[i][datei].toLocaleDateString() + " - Washington Post - " + links[i][posteri];
-          articleMeta.appendChild(metaText);
-
-          articleTextBox.appendChild(articleText);
-          articleTextBox.appendChild(articleMeta);    
-          newArticle.appendChild(articleTextBox); 
-
-          FeaturedList.appendChild(newArticle);
+        FeaturedList.appendChild(newArticle);
       }
       else
       {
         const newArticle = document.createElement("div");
-        newArticle.classList.add("article");
+            newArticle.classList.add("article");
 
-        const articleTextBox = document.createElement("div");
-        articleTextBox.classList.add("article-text-box");
-        
-        const articleText = document.createElement("a");
-        articleText.classList.add("article-text");
-        //articleText.textContent = links[i][0]; Post title goes here
-        articleText.textContent = links[i][0];
-        articleText.setAttribute('href', links[i][urli]);
+            const thumbnail = document.createElement("img");
+                thumbnail.classList.add("thumbnail");
+                //thumbnail.setAttribute('src', links[i][5]);   Thumbnail goes here
+                thumbnail.setAttribute('src', "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg");
+            newArticle.appendChild(thumbnail);
 
-        const articleMeta = document.createElement("div");
-        articleMeta.classList.add("article-meta");
-        const metaText = document.createElement("div");
-        metaText.classList.add("article-meta-text");
-        metaText.textContent = links[i][datei].toLocaleDateString() + " - Washington Post - " + links[i][posteri];
-        articleMeta.appendChild(metaText);
-
-        const thumbnail = document.createElement("img");
-        thumbnail.classList.add("thumbnail");
-        //thumbnail.setAttribute('src', links[i][5]);   Thumbnail goes here
-        thumbnail.setAttribute('src', "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg");
-        
-        const favoriteButton = document.createElement("button");
-        favoriteButton.trueIndex = links[i][indexi];
-        favoriteButton.addEventListener('click', favorite);
-
-        newArticle.appendChild(thumbnail);
-        articleTextBox.appendChild(articleText);
-        articleTextBox.appendChild(articleMeta);
-        newArticle.appendChild(articleTextBox); 
-        newArticle.appendChild(favoriteButton); 
-
+            articleTextBox = createArticleTextBox(links, i);
+            newArticle.appendChild(articleTextBox); 
 
         ArticleList.appendChild(newArticle);
       }
     }
 }
 
-function favorite(){
+function createArticleTextBox(links, i){
+    const articleTextBox = document.createElement("div");
+    articleTextBox.classList.add("article-text-box");
+
+    const articleText = document.createElement("a");
+        articleText.classList.add("article-text");
+        //articleText.textContent = links[i][0]; Post title goes here
+        articleText.textContent = links[i][0];
+        articleText.setAttribute('href', links[i][urli]);
+
+    articleTextBox.appendChild(articleText);
+
+    const articleMeta = document.createElement("div");
+        articleMeta.classList.add("article-meta");
+        const metaText = document.createElement("div");
+            metaText.classList.add("article-meta-text");
+            // Site author goes here
+            metaText.textContent = links[i][datei].toLocaleDateString() + " - Washington Post - " + links[i][posteri];
+        articleMeta.appendChild(metaText);
+    
+    articleTextBox.appendChild(articleMeta);
+
+    buttonHolder = createButtonHolder(links, i);
+    articleTextBox.appendChild(buttonHolder);
+
+    return articleTextBox;
+}
+
+function createButtonHolder(links, i){
+    const buttonHolder = document.createElement("div")
+    buttonHolder.classList.add("article-meta");
+    const saveButton = document.createElement("button");
+        saveButton.classList.add("button");
+        saveButton.classList.add("save-button");
+        saveButton.trueIndex = links[i][indexi];
+        saveButton.saved = links[i][savedi];
+        if(saveButton.saved == 0)
+            saveButton.textContent = "Save";
+        else
+            saveButton.textContent = "Saved";
+        saveButton.addEventListener('click', save);
+    buttonHolder.appendChild(saveButton);
+
+    buttonHolder.classList.add("button-holder");
+    const likeButton = document.createElement("button");
+        likeButton.classList.add("button");
+        likeButton.classList.add("like-button");
+        likeButton.trueIndex = links[i][indexi];
+        likeButton.liked = links[i][likedi];
+        if(likeButton.liked == 0)
+            likeButton.textContent = "Like";
+        else
+            likeButton.textContent = "Liked";
+        likeButton.addEventListener('click', like);
+    buttonHolder.appendChild(likeButton);
+
+    buttonHolder.classList.add("article-meta");
+    const dislikeButton = document.createElement("button");
+        dislikeButton.classList.add("button");
+        dislikeButton.classList.add("dislike-button");
+        dislikeButton.trueIndex = links[i][indexi];
+        dislikeButton.disliked = links[i][dislikedi];
+        if(dislikeButton.disliked == 0)
+            dislikeButton.textContent = "Dislike";
+        else
+            dislikeButton.textContent = "Disliked";
+        dislikeButton.addEventListener('click', dislike);
+    buttonHolder.appendChild(dislikeButton);
+
+    return buttonHolder;
+}
+
+function save(){
     var index = event.currentTarget.trueIndex;
     var link;
 
     for(var i = 0; i < originalLinks.length; i++)
       if(originalLinks[i][indexi] == index)
+      {
         link = originalLinks[i];
+        index = i;
+      }
 
-    console.log(link);
+    if(event.currentTarget.saved == 0)
+    {
+        event.currentTarget.textContent = "Saved";
+        event.currentTarget.saved = 1;
+        originalLinks[index][savedi] = true;
+    }
+    else
+    {
+        event.currentTarget.textContent = "Save";
+        event.currentTarget.saved = 0;
+        originalLinks[index][savedi] = false;
+    }
+}
+
+function like(){
+    var index = event.currentTarget.trueIndex;
+    var link;
+
+    for(var i = 0; i < originalLinks.length; i++)
+      if(originalLinks[i][indexi] == index)
+      {
+        link = originalLinks[i];
+        index = i;
+      }
+
+    if(event.currentTarget.liked == 0)
+    {
+        event.currentTarget.textContent = "Liked";
+        event.currentTarget.liked = 1;
+        originalLinks[index][likedi] = true;
+    }
+    else
+    {
+        event.currentTarget.textContent = "Like";
+        event.currentTarget.liked = 0;
+        originalLinks[index][likedi] = false;
+    }
+}
+
+function dislike(){
+    var index = event.currentTarget.trueIndex;
+    var link;
+
+    for(var i = 0; i < originalLinks.length; i++)
+      if(originalLinks[i][indexi] == index)
+      {
+        link = originalLinks[i];
+        index = i;
+      }
+
+    if(event.currentTarget.disliked == 0)
+    {
+        event.currentTarget.textContent = "Disiked";
+        event.currentTarget.disliked = 1;
+        originalLinks[index][dislikedi] = true;
+    }
+    else
+    {
+        event.currentTarget.textContent = "Dislike";
+        event.currentTarget.disliked = 0;
+        originalLinks[index][dislikedi] = false;
+    }
 }
 
 function filterByGroup() {
