@@ -1,21 +1,22 @@
-/-  *chronicle, spaces-store, visas, membership
+/-  chronicle, spaces-store, visas, membership
 /+  default-agent, dbug, server, schooner
 /*  chronicle-ui  %html  /app/chronicle-ui/html
 |%
 +$  versioned-state
   $%  state-0
   ==
-+$  state-0  [%0 newsfeed=feed]
++$  state-0  [%0 newsfeed=feed:chronicle]
 +$  card  card:agent:gall
 -- 
 %-  agent:dbug
 =|  state-0
 =*  state  -
 ^-  agent:gall
+=<
 |_  =bowl:gall
 +*  this      .
     def   ~(. (default-agent this %.n) bowl)
-    hc    ~(. +> bowl)
+    hc    +>
 ++  on-init
   ^-  (quip card _this)
   :_  this(newsfeed ~)
@@ -46,11 +47,37 @@
   |^
   ?>  =(src.bowl our.bowl)
   ?+    mark  (on-poke:def mark vase)
+      %chronicle-action
+    =^  cards  state
+      (handle-action !<(action:chronicle vase))
+    [cards this]
+    ::
       %handle-http-request
     =^  cards  state
       (handle-http !<([@ta =inbound-request:eyre] vase))
     [cards this]
   ==
+  ::
+  ++  handle-action
+    |=  =action:chronicle
+    ^-  (quip card _state)
+    ?-    -.action
+        %add
+      ?>  =(our.bowl src.bowl)
+      ?>  =(our.bowl ship:path:link:action)
+      :_  state(newsfeed (snoc newsfeed link:action))
+      ~&  /updates/(scot %p ship:path:link:action)/(scot %tas space:path:link:action)
+      :~  :*  %give  %fact  
+              ~[/updates/(scot %p ship:path:link:action)/(scot %tas space:path:link:action)]  
+              %chronicle-update
+              !>(`update:chronicle`new+link:action)
+      ==  ==
+      ::
+        %remove
+      ?>  =(our.bowl src.bowl)
+      ::  ?>  =(our.bowl ship:path:link:action)
+      `state
+    ==
   ::
   ++  handle-http
     |=  [eyre-id=@ta =inbound-request:eyre]
@@ -90,16 +117,17 @@
   ::              
   ++  enjs-state
     =,  enjs:format
-    |=  fee=feed
+    |=  fee=feed:chronicle
     ^-  json
     :-  %a
     %+  turn
       fee
-    |=  lin=link
+    |=  lin=link:chronicle
     :-  %a
     :~
       [%s url:lin]
-      [%s group:lin]
+      [%s (scot %p -:path:lin)]
+      [%s +:path:lin]
       [%s (scot %da date:lin)]
       [%s (scot %p poster:lin)]
       [%n (scot %ud likes:lin)]
@@ -118,7 +146,7 @@
       [%http-response *]
     `this
     ::
-      [%updates @ ~]
+      [%updates @ @ ~]
     ?<  =(src.bowl our.bowl)
     `this
   ==
@@ -149,9 +177,43 @@
             :*
               %pass  /links/(scot %p ship:path:space:reaction)/(scot %tas space:path:space:reaction)
               %agent  [ship:path:space:reaction %chronicle]
-              %watch  /updates/(scot %tas space:path:space:reaction)
+              %watch  /updates/(scot %p ship:path:space:reaction)/(scot %tas space:path:space:reaction)
             ==  
           ==
+        ==
+      ==
+    ==
+    ::
+      [%space @ @ ~]
+    ?+    -.sign  (on-agent:def wire sign)
+        %fact
+      ?+    p.cage.sign  (on-agent:def wire sign)
+          %visa-reaction
+        `this
+        ::
+          %spaces-reaction
+        `this
+        ::=/  reaction  !<(reaction:spaces-store q.cage.sign)
+        ::?+    -.reaction  `this
+        ::    %remove
+        ::  :_  this
+        ::  ~[[%pass wire %agent [our.bowl %spaces] %leave ~]]
+        ::== 
+      ==
+    ==
+    ::
+      [%links @ @ ~]
+    ~&  'got link'
+    ?+    -.sign  `this
+        %fact
+      ?+    p.cage.sign  `this
+          %chronicle-update
+                ~&  'chronicle update'
+        =/  update  !<(update:chronicle q.cage.sign)
+        ?+    -.update  `this
+            %new
+            ~&  'new'
+          `this(newsfeed (snoc newsfeed link:update))
         ==
       ==
     ==
@@ -159,4 +221,10 @@
 ::
 ++  on-arvo   on-arvo:def
 ++  on-fail   on-fail:def
+--
+::
+|%
+++  path-help
+  |=  x=@ta
+  x
 --
