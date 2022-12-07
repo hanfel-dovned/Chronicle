@@ -332,6 +332,37 @@ function daToDate(st) {
   return new Date(ds);
 }
 
+function post(tag, data) {
+    fetch('/apps/chronicle', {
+        method: 'POST',
+        body: JSON.stringify({[tag]: data})
+    })
+    location.reload()
+}
+
+const blessing = document.getElementById("blessing");
+const interrogate = document.getElementById("interrogate");
+
+function save()
+{
+    post("save", document.getElementById('blessBox').value);
+}
+
+function like()
+{
+    post("like", "~" + document.getElementById('blessDumb').value);
+}
+
+function dislike()
+{
+    post("dislike", document.getElementById('interoBox').value);
+}
+
+function feature()
+{
+    post("feature", document.getElementById('interoBox').value);
+}
+
 var urli = 0;
 var groupi = 1;
 var datei = 2;
@@ -343,9 +374,11 @@ var dislikedi = 7;
 var savedi = 8;
 var featuredi = 9;
 var indexi = 10;
+var ogdatei = 11;
 
 getState()
     .then((links) => renderPage(links))
+
 
 async function getState() {
     const response = await fetch('/apps/chronicle/state')
@@ -364,8 +397,9 @@ async function renderPage(links)
 
     for(var i = 0; i < links.length; i++)
     {
-        links[i][datei] = daToDate(links[i][datei])
-        links[i].push(i)
+        links[i].push(i)    //trueIndex
+        links[i].push(links[i][datei])  //original date
+        links[i][datei] = daToDate(links[i][datei])    //visually friendly date
     }
 
     links.sort(sortByDate);

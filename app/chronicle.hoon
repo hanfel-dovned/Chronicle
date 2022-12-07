@@ -65,7 +65,7 @@
         %add
       ?>  =(our.bowl src.bowl)
       ?>  =(our.bowl ship:path:link:action)
-      :_  state(newsfeed (snoc newsfeed link:action))
+      :_  state(newsfeed :-(link:action newsfeed))
       :~  :*  %give  %fact  
               ~[/updates/(scot %p ship:path:link:action)/(scot %tas space:path:link:action)]  
               %chronicle-update
@@ -76,6 +76,77 @@
       ?>  =(our.bowl src.bowl)
       ::  ?>  =(our.bowl ship:path:link:action)
       `state
+      ::
+      ::  Save to reading list.
+        %save
+      ?>  =(our.bowl src.bowl)
+      =/  i  (get-index-by-date newsfeed date:action)
+      =/  old  ^-  link:chronicle  (snag i newsfeed)
+      =/  new  ^-  link:chronicle  old(saved !saved:old)
+      `state(newsfeed (snap newsfeed i new))
+      ::
+      ::  If not host, like link and poke host.
+      ::  If host, increment likes and send update.
+        %like
+      =/  i  (get-index-by-date newsfeed date:action)
+      =/  old  ^-  link:chronicle  (snag i newsfeed)
+      ?>  =(liked:old %.n)
+      ?.  =(our.bowl ship:path:old)
+        ?>  =(our.bowl src.bowl)
+        =/  new  ^-  link:chronicle  old(liked %.y)
+        :_  state(newsfeed (snap newsfeed i new))
+        :~  :*  %pass  /like  %agent
+                [ship:path:new %chronicle]
+                %poke  %chronicle-action
+                !>([%like date:action])
+        ==  ==
+        ::
+      =/  new  ^-  link:chronicle  old(likes +(likes:old))
+      :_  state(newsfeed (snap newsfeed i new))
+      :~  :*  
+              %give  %fact  ~[/updates/(scot %p ship:path:new)/(scot %tas space:path:new)]
+              %chronicle-update 
+              !>(`update:chronicle`[%edit date:new new])
+      ==  ==
+      ::
+      ::  If not host, dislike link and poke host.
+      ::  If host, decrement likes and send update.
+      ::::  Pretty redundant, could maybe be an arm.
+        %dislike
+      =/  i  (get-index-by-date newsfeed date:action)
+      =/  old  ^-  link:chronicle  (snag i newsfeed)
+      ?>  =(disliked:old %.n)
+      ?.  =(our.bowl ship:path:old)
+        ?>  =(our.bowl src.bowl)
+        =/  new  ^-  link:chronicle  old(disliked %.y)
+        :_  state(newsfeed (snap newsfeed i new))
+        :~  :*  %pass  /dislike  %agent
+                [ship:path:new %chronicle]
+                %poke  %chronicle-action
+                !>([%dislike date:action])
+        ==  ==
+        ::
+      =/  new  ^-  link:chronicle  old(dislikes +(dislikes:old))
+      :_  state(newsfeed (snap newsfeed i new))
+      :~  :*  
+              %give  %fact  ~[/updates/(scot %p ship:path:new)/(scot %tas space:path:new)]
+              %chronicle-update 
+              !>(`update:chronicle`[%edit date:new new])
+      ==  ==
+      ::
+      ::  If host, flip featured and send update.
+        %feature
+      ?>  =(our.bowl src.bowl)
+      =/  i  (get-index-by-date newsfeed date:action)
+      =/  old  ^-  link:chronicle  (snag i newsfeed)
+      ?>  =(our.bowl ship:path:old)
+      =/  new  ^-  link:chronicle  old(featured !featured:old)
+      :_  state(newsfeed (snap newsfeed i new))
+      :~  :*  
+              %give  %fact  ~[/updates/(scot %p ship:path:new)/(scot %tas space:path:new)]
+              %chronicle-update 
+              !>(`update:chronicle`[%edit date:new new])
+      ==  ==
     ==
   ::
   ++  handle-http
@@ -161,7 +232,7 @@
     ::  Need to check here if person requesting
     ::  is actually a member of this space.
     ::  Scry spaces agent for members and compare.
-    =/  links  (get-link-by-space:hc newsfeed [(slav %p +6:path) +14:path])
+    =/  links  (get-links-by-space:hc newsfeed [(slav %p +6:path) +14:path])
     :_  this
     %+  turn  links
     |=  =link:chronicle
@@ -229,9 +300,15 @@
       ?+    p.cage.sign  `this
           %chronicle-update
         =/  update  !<(update:chronicle q.cage.sign)
-        ?+    -.update  `this
+        ?-    -.update
             %new
-          `this(newsfeed (snoc newsfeed link:update))
+          `this(newsfeed :-(link:update newsfeed))
+          ::
+            %edit
+          =/  i  (get-index-by-date newsfeed date:update)
+          =/  old  ^-  link:chronicle  (snag i newsfeed)
+          =/  new  ^-  link:chronicle  link:update
+          `this(newsfeed (snap newsfeed i new(saved saved:old)))
         ==
       ==
     ==
@@ -242,7 +319,7 @@
 --
 ::
 |%
-++  get-link-by-space
+++  get-links-by-space
   |=  [links=(list link:chronicle) =path:spaces-path]
   ^-  (list link:chronicle)
   =/  returns=(list link:chronicle)  ~
@@ -252,6 +329,16 @@
   ?.  =(+6:-:links path)
     $(links +.links)
   $(links +.links, returns (snoc returns -.links))
+::
+::  Dates are a unique identifier
+++  get-index-by-date
+  |=  [links=(list link:chronicle) date=@d]
+  ^-  @ud
+  =/  i  0
+  |-
+  ?:  =(+14:-:links date)
+    i
+  $(links +:links, i +(i))
 ::
 ++  path-help
   |=  x=@ta

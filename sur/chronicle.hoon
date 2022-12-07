@@ -5,9 +5,13 @@
 +$  action
   $%  [%add =link]
       [%remove date=@d]
+      [%save date=@d]
+      [%like date=@d]
+      [%dislike date=@d]
+      [%feature date=@d]
   ==
 +$  update
   $%  [%new =link]
-      [%update date=@d =link]
+      [%edit date=@d =link]
   ==
 --
