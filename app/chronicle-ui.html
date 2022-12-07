@@ -75,8 +75,8 @@ select:hover {
     color: #777777;
 }
 
-.titleSelect {
-  font-size: 42px;
+.title {
+  font-size: 84px;
 }
 
 
@@ -305,10 +305,7 @@ select:hover {
 
 <body>
   <main>
-      <select id="groupChooser" class="titleSelect" onchange="filterByGroup();">
-        <option value="All">All Links</option>
-        <option value="Saved">Saved Links</option>
-      </select>
+      <h1 id="title">Chronicle</h2>
       <div id="featured-list"></div>
       <br>
       <select id="dateChooser" onchange="filterByDate();">
@@ -357,8 +354,14 @@ async function getState() {
 
 var originalLinks = []
 var currentLinks = []
+var activeSpace = '/'
 async function renderPage(links)
 {
+    activeSpace = "/~" + links[0].slice(1);
+    console.log(activeSpace);  
+    links = links[1];
+    console.log(links);  
+
     for(var i = 0; i < links.length; i++)
     {
         links[i][datei] = daToDate(links[i][datei])
@@ -368,33 +371,14 @@ async function renderPage(links)
     links.sort(sortByDate);
 
     originalLinks = links;
-    currentLinks = links;
-    fillGroupChooser(links);
-    displayFeed(links);
-}
-
-function fillGroupChooser(links) {
-    var chooser = document.getElementById("groupChooser")
-    var groups = []
-
-    for(var i = 0; i < links.length; i++)
-    {
-        if(!groups.includes(links[i][groupi]))
-        {
-            groups.push(links[i][groupi])
-
-            const newOption = document.createElement("option");
-            newOption.text = links[i][groupi]
-            newOption.value = links[i][groupi]
-            chooser.appendChild(newOption)
-        }
-    }
+    currentLinks = filterLinks(originalLinks, activeSpace);
+    displayFeed(currentLinks);
 }
 
 function displayFeed(links) {
     const ArticleList = document.getElementById("article-list");
     const FeaturedList = document.getElementById("featured-list");
-    const group = document.getElementById("groupChooser").value;
+    const group = activeSpace;
 
     while (ArticleList.firstChild) {
         ArticleList.removeChild(ArticleList.firstChild);
@@ -403,10 +387,13 @@ function displayFeed(links) {
         FeaturedList.removeChild(FeaturedList.firstChild);
     }
 
+    if(group == "/")
+        FeaturedList.remove();
+
     for(var i = 0; i < links.length; i++)
     {
       //much of the code between these two branches is redundant
-      if(group != "All" && group != "Saved" && links[i][featuredi] == true)
+      if(group != "/" && group != "Saved" && links[i][featuredi] == true)
       {
         const newArticle = document.createElement("div");
             newArticle.classList.add("featured");
@@ -587,18 +574,12 @@ function dislike(){
     }
 }
 
-function filterByGroup() {
-    var group = document.getElementById("groupChooser").value;
-    currentLinks = filterLinks(originalLinks, group);
-    displayFeed(currentLinks);
-}
-
 function filterLinks(links, group) {
     var newLinks = []
 
     for(var i = 0; i < links.length; i++)
     {
-      if(links[i][groupi] == group || group == "All" || (group == "Saved" && links[i][savedi] == true))
+      if(links[i][groupi] == group || group == "/" || (group == "Saved" && links[i][savedi] == true))
         newLinks.push(links[i])
     }
 

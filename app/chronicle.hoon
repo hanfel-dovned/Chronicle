@@ -5,7 +5,7 @@
 +$  versioned-state
   $%  state-0
   ==
-+$  state-0  [%0 newsfeed=feed:chronicle]
++$  state-0  [%0 active-space=path newsfeed=feed:chronicle]
 +$  card  card:agent:gall
 -- 
 %-  agent:dbug
@@ -66,7 +66,6 @@
       ?>  =(our.bowl src.bowl)
       ?>  =(our.bowl ship:path:link:action)
       :_  state(newsfeed (snoc newsfeed link:action))
-      ~&  /updates/(scot %p ship:path:link:action)/(scot %tas space:path:link:action)
       :~  :*  %give  %fact  
               ~[/updates/(scot %p ship:path:link:action)/(scot %tas space:path:link:action)]  
               %chronicle-update
@@ -100,7 +99,15 @@
                   ~ 
                 [%plain "404 - Not Found"] 
           [%apps %chronicle ~]
-        :_  state
+        =/  urltape  (trip url.request.inbound-request)
+        =/  query
+          ^-  path
+          |-
+          ?~  urltape  ~
+          ?:  =(-.urltape '=')
+            (stab (crip +.urltape))
+          $(urltape +.urltape)
+        :_  state(active-space query)
         %-  send  
         :+  200
           ~
@@ -111,31 +118,34 @@
         %-  send
         :+  200   
           ~ 
-        [%json (enjs-state newsfeed)]
+        [%json (enjs-state [active-space newsfeed])]
       ==
     ==
   ::              
   ++  enjs-state
     =,  enjs:format
-    |=  fee=feed:chronicle
+    |=  [active=^path fee=feed:chronicle]
     ^-  json
     :-  %a
-    %+  turn
-      fee
-    |=  lin=link:chronicle
-    :-  %a
     :~
-      [%s url:lin]
-      [%s (scot %p -:path:lin)]
-      [%s +:path:lin]
-      [%s (scot %da date:lin)]
-      [%s (scot %p poster:lin)]
-      [%n (scot %ud likes:lin)]
-      [%n (scot %ud dislikes:lin)]
-      [%b liked:lin]
-      [%b disliked:lin]
-      [%b saved:lin]
-      [%b featured:lin]
+      (path active)
+      :-  %a
+      %+  turn
+        fee
+      |=  lin=link:chronicle
+      :-  %a
+      :~
+        [%s url:lin]
+        (path /(scot %p -:path:lin)/(scot %tas +:path:lin))
+        [%s (scot %da date:lin)]
+        [%s (scot %p poster:lin)]
+        [%n (scot %ud likes:lin)]
+        [%n (scot %ud dislikes:lin)] 
+        [%b liked:lin]
+        [%b disliked:lin]
+        [%b saved:lin]
+        [%b featured:lin]
+      ==
     ==
   --
 ::
@@ -148,6 +158,9 @@
     ::
       [%updates @ @ ~]
     ?<  =(src.bowl our.bowl)
+    ::  Need to check here if person requesting
+    ::  is actually a member of this space.
+    ::  Scry spaces agent for members and compare.
     =/  links  (get-link-by-space:hc newsfeed [(slav %p +6:path) +14:path])
     :_  this
     %+  turn  links
@@ -211,16 +224,13 @@
     ==
     ::
       [%links @ @ ~]
-    ~&  'got link'
     ?+    -.sign  `this
         %fact
       ?+    p.cage.sign  `this
           %chronicle-update
-                ~&  'chronicle update'
         =/  update  !<(update:chronicle q.cage.sign)
         ?+    -.update  `this
             %new
-            ~&  'new'
           `this(newsfeed (snoc newsfeed link:update))
         ==
       ==
