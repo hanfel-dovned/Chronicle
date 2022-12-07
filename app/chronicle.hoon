@@ -1,4 +1,4 @@
-/-  chronicle, spaces-store, visas, membership
+/-  chronicle, spaces-store, visas, membership, spaces-path
 /+  default-agent, dbug, server, schooner
 /*  chronicle-ui  %html  /app/chronicle-ui/html
 |%
@@ -148,7 +148,15 @@
     ::
       [%updates @ @ ~]
     ?<  =(src.bowl our.bowl)
-    `this
+    =/  links  (get-link-by-space:hc newsfeed [(slav %p +6:path) +14:path])
+    :_  this
+    %+  turn  links
+    |=  =link:chronicle
+    :*  %give  %fact  
+        ~  
+        %chronicle-update
+        !>(`update:chronicle`new+link)
+    ==
   ==
 ++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
@@ -224,6 +232,17 @@
 --
 ::
 |%
+++  get-link-by-space
+  |=  [links=(list link:chronicle) =path:spaces-path]
+  ^-  (list link:chronicle)
+  =/  returns=(list link:chronicle)  ~
+  |-
+  ?:  =(links ~)
+    returns
+  ?.  =(+6:-:links path)
+    $(links +.links)
+  $(links +.links, returns (snoc returns -.links))
+::
 ++  path-help
   |=  x=@ta
   x
