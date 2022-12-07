@@ -1,4 +1,4 @@
-/-  *chronicle
+/-  *chronicle, spaces-store, visas, membership
 /+  default-agent, dbug, server, schooner
 /*  chronicle-ui  %html  /app/chronicle-ui/html
 |%
@@ -18,17 +18,13 @@
     hc    ~(. +> bowl)
 ++  on-init
   ^-  (quip card _this)
-  :_  %=  this
-        newsfeed  
-        :~  ['http://google.com' 'warpzone' ~2022.8.30..20.47.00..6d02 ~zod 1 1 %.n %.n %.n %.y]
-            ['http://facebook.com' 'warpzone' ~2021.7.30..20.47.00..6d91 ~bus 10 2 %.n %.n %.n %.y] 
-            ['http://bebo.com' 'temple' ~2021.2.30..20.47.00..6dff ~bus 10 3 %.n %.n %.n %.n]
-            ['http://myspace.com' 'temple' ~2021.4.30..20.47.00..7d01 ~bus 12 0 %.n %.n %.n %.n]
-        ==
-      ==
+  :_  this(newsfeed ~)
   :~
     :*  %pass  /eyre/connect  %arvo  %e 
-        %connect  `/apps/chronicle  %chronicle
+        %connect  `/apps/minesweeper  %minesweeper
+    ==
+    :*  %pass  /spaces-updates  %agent
+        [our.bowl %spaces]  %watch  /spaces
     ==  
   ==
 :: 
@@ -121,10 +117,46 @@
   ?+    path  (on-watch:def path)
       [%http-response *]
     `this
+    ::
+      [%updates @ ~]
+    ?<  =(src.bowl our.bowl)
+    `this
   ==
 ++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
-++  on-agent  on-agent:def
+++  on-agent
+  |=  [=wire =sign:agent:gall]
+  ^-  (quip card _this)
+  ?+    wire  (on-agent:def wire sign)
+      [%spaces-updates ~]
+    ?+    -.sign  (on-agent:def wire sign)
+        %fact
+      ?+    p.cage.sign  (on-agent:def wire sign)
+          %spaces-reaction
+        =/  reaction  !<(reaction:spaces-store q.cage.sign)
+        ?+    -.reaction  (on-agent:def wire sign)
+            %add
+          =/  space-card  
+            :*
+              %pass  /space/(scot %p ship:path:space:reaction)/(scot %tas space:path:space:reaction)
+              %agent  [our.bowl %spaces]
+              %watch  /spaces/(scot %p ship:path:space:reaction)/(scot %tas space:path:space:reaction)
+            ==
+          ?:  =(our.bowl ship:path:space:reaction)
+            [~[space-card] this] 
+          :_  this
+          :~  space-card
+            :*
+              %pass  /links/(scot %p ship:path:space:reaction)/(scot %tas space:path:space:reaction)
+              %agent  [ship:path:space:reaction %chronicle]
+              %watch  /updates/(scot %tas space:path:space:reaction)
+            ==  
+          ==
+        ==
+      ==
+    ==
+  ==
+::
 ++  on-arvo   on-arvo:def
 ++  on-fail   on-fail:def
 --
