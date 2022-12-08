@@ -1,4 +1,4 @@
-/-  chronicle, spaces-store, visas, membership, spaces-path
+/-  chronicle, spaces-store, visas, membership, spaces-path, chat
 /+  default-agent, dbug, server, schooner
 /*  chronicle-ui  %html  /app/chronicle-ui/html
 |%
@@ -26,7 +26,10 @@
     ==
     :*  %pass  /spaces-updates  %agent
         [our.bowl %spaces]  %watch  /spaces
-    ==  
+    ==
+    :*  %pass  /chats  %agent
+        [our.bowl %chat]  %watch  /briefs
+    ==
   ==
 :: 
 ++  on-save
@@ -267,6 +270,24 @@
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
   ?+    wire  (on-agent:def wire sign)
+      [%chats ~]
+    ?+    -.sign  `this
+        %fact
+      ?.  =(%chat-brief-update p.cage.sign)  `this
+      =/  update  !<([whom:chat brief:briefs:chat] q.cage.sign)
+      ?.  ?=(%flag -.-.update)  `this
+      ?.  =(p:p:update our.bowl)  `this
+      ~&  >
+      .^  (map @da writ:chat)
+        %gx
+        ;:  welp
+          /(scot %p our.bowl)/chat/(scot %da now.bowl)/chat
+          /(scot %p p.p.-.update)/[q.p.-.update]/writs/newest/1/noun
+        ==
+      ==
+      `this
+    ==
+    ::
       [%spaces-updates ~]
     ?+    -.sign  (on-agent:def wire sign)
         %fact
