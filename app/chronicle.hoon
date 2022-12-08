@@ -22,7 +22,7 @@
   :_  this(newsfeed ~)
   :~
     :*  %pass  /eyre/connect  %arvo  %e 
-        %connect  `/apps/minesweeper  %minesweeper
+        %connect  `/apps/chronicle  %chronicle
     ==
     :*  %pass  /spaces-updates  %agent
         [our.bowl %spaces]  %watch  /spaces
@@ -163,12 +163,20 @@
     ?+    method.request.inbound-request 
       [(send [405 ~ [%stock ~]]) state]
       ::
+        %'POST'
+      ?~  body.request.inbound-request
+        [(send [405 ~ [%stock ~]]) state]
+      =/  json  (de-json:html q.u.body.request.inbound-request)
+      =/  action  (dejs-action +.json)
+      (handle-action action) 
+      :: 
         %'GET'
       ?+  site  :_  state 
                 %-  send
                 :+  404
                   ~ 
                 [%plain "404 - Not Found"] 
+        ::
           [%apps %chronicle ~]
         =/  urltape  (trip url.request.inbound-request)
         =/  query
@@ -199,6 +207,7 @@
     ^-  json
     :-  %a
     :~
+      [%s (scot %p our.bowl)]
       (path active)
       :-  %a
       %+  turn
@@ -218,6 +227,19 @@
         [%b featured:lin]
       ==
     ==
+    ::
+    ++  dejs-action
+      =,  dejs:format
+      |=  jon=json
+      ^-  action:chronicle
+      %.  jon
+      %-  of
+      :~  save+(se %da)
+          like+(se %da)
+          dislike+(se %da)
+          feature+(se %da)
+      ==
+  ::
   --
 ::
 ++  on-watch

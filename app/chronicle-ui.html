@@ -297,7 +297,8 @@ select:hover {
 .like-button:hover { background-color: #2d77ed;}
 .dislike-button {background-color: #ed2d2d;}
 .dislike-button:hover { background-color: #c91c1c; }
-
+.feature-button {background-color: #a40097;}
+.feature-button:hover { background-color: #810076; }
 
 
 </style>
@@ -343,24 +344,36 @@ function post(tag, data) {
 const blessing = document.getElementById("blessing");
 const interrogate = document.getElementById("interrogate");
 
-function save()
+function postSave(date)
 {
-    post("save", document.getElementById('blessBox').value);
+    fetch('/apps/chronicle', {
+        method: 'POST',
+        body: JSON.stringify({'save': date})
+    })
 }
 
-function like()
+function postLike(date)
 {
-    post("like", "~" + document.getElementById('blessDumb').value);
+    fetch('/apps/chronicle', {
+        method: 'POST',
+        body: JSON.stringify({'like': date})
+    })
 }
 
-function dislike()
+function postDislike(date)
 {
-    post("dislike", document.getElementById('interoBox').value);
+    fetch('/apps/chronicle', {
+        method: 'POST',
+        body: JSON.stringify({'dislike': date})
+    })
 }
 
-function feature()
+function postFeature(date)
 {
-    post("feature", document.getElementById('interoBox').value);
+    fetch('/apps/chronicle', {
+        method: 'POST',
+        body: JSON.stringify({'feature': date})
+    })
 }
 
 var urli = 0;
@@ -388,12 +401,15 @@ async function getState() {
 var originalLinks = []
 var currentLinks = []
 var activeSpace = '/'
+var myShip = ''
+var spaceHost = ''
 async function renderPage(links)
 {
-    activeSpace = "/~" + links[0].slice(1);
-    console.log(activeSpace);  
-    links = links[1];
-    console.log(links);  
+    myShip = links[0];
+    activeSpace = "/~" + links[1].slice(1);
+    spaceHost = activeSpace.split("/")[1];
+    console.log(spaceHost);
+    links = links[2];
 
     for(var i = 0; i < links.length; i++)
     {
@@ -530,6 +546,22 @@ function createButtonHolder(links, i){
         dislikeButton.addEventListener('click', dislike);
     buttonHolder.appendChild(dislikeButton);
 
+    if(myShip == spaceHost)
+    {
+        buttonHolder.classList.add("article-meta");
+        const featureButton = document.createElement("button");
+            featureButton.classList.add("button");
+            featureButton.classList.add("feature-button");
+            featureButton.trueIndex = links[i][indexi];
+            featureButton.disliked = links[i][featuredi];
+            if(featureButton.featured == 0)
+                featureButton.textContent = "Feature";
+            else
+                featureButton.textContent = "Featured";
+            featureButton.addEventListener('click', feature);
+        buttonHolder.appendChild(featureButton);
+    }
+
     return buttonHolder;
 }
 
@@ -543,6 +575,8 @@ function save(){
         link = originalLinks[i];
         index = i;
       }
+
+    postSave(link[ogdatei]);
 
     if(event.currentTarget.saved == 0)
     {
@@ -569,18 +603,11 @@ function like(){
         index = i;
       }
 
-    if(event.currentTarget.liked == 0)
-    {
-        event.currentTarget.textContent = "Liked";
-        event.currentTarget.liked = 1;
-        originalLinks[index][likedi] = true;
-    }
-    else
-    {
-        event.currentTarget.textContent = "Like";
-        event.currentTarget.liked = 0;
-        originalLinks[index][likedi] = false;
-    }
+    postLike(link[ogdatei]);
+
+    event.currentTarget.textContent = "Liked";
+    event.currentTarget.liked = 1;
+    originalLinks[index][likedi] = true;
 }
 
 function dislike(){
@@ -594,17 +621,37 @@ function dislike(){
         index = i;
       }
 
-    if(event.currentTarget.disliked == 0)
+    postDislike(link[ogdatei]);
+
+    event.currentTarget.textContent = "Disliked";
+    event.currentTarget.disliked = 1;
+    originalLinks[index][dislikedi] = true;
+}
+
+function feature(){
+    var index = event.currentTarget.trueIndex;
+    var link;
+
+    for(var i = 0; i < originalLinks.length; i++)
+      if(originalLinks[i][indexi] == index)
+      {
+        link = originalLinks[i];
+        index = i;
+      }
+
+    postFeature(link[ogdatei]);
+
+    if(event.currentTarget.featured == 0)
     {
-        event.currentTarget.textContent = "Disiked";
-        event.currentTarget.disliked = 1;
-        originalLinks[index][dislikedi] = true;
+        event.currentTarget.textContent = "Featured";
+        event.currentTarget.featured = 1;
+        originalLinks[index][featured] = true;
     }
     else
     {
-        event.currentTarget.textContent = "Dislike";
-        event.currentTarget.disliked = 0;
-        originalLinks[index][dislikedi] = false;
+        event.currentTarget.textContent = "Feature";
+        event.currentTarget.featured = 0;
+        originalLinks[index][featured] = false;
     }
 }
 
