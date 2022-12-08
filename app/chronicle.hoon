@@ -62,6 +62,8 @@
     |=  =action:chronicle
     ^-  (quip card _state)
     ?-    -.action
+      ::
+      ::  Add a link to your newsfeed.
         %add
       ?>  =(our.bowl src.bowl)
       ?>  =(our.bowl ship:path:link:action)
@@ -71,11 +73,6 @@
               %chronicle-update
               !>(`update:chronicle`new+link:action)
       ==  ==
-      ::
-        %remove
-      ?>  =(our.bowl src.bowl)
-      ::  ?>  =(our.bowl ship:path:link:action)
-      `state
       ::
       ::  Save to reading list.
         %save

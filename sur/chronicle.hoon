@@ -4,7 +4,6 @@
 +$  feed  (list link)
 +$  action
   $%  [%add =link]
-      [%remove date=@d]
       [%save date=@d]
       [%like date=@d]
       [%dislike date=@d]
