@@ -275,6 +275,7 @@
         %fact
       ?.  =(%chat-brief-update p.cage.sign)  `this
       =/  update  !<([whom:chat brief:briefs:chat] q.cage.sign)
+      ~&  update
       ?.  ?=(%flag -.-.update)  `this
       ?.  =(p:p:update our.bowl)  `this
       =/  post=(pair @da writ:chat)
@@ -286,13 +287,31 @@
             /(scot %p p.p.-.update)/[q.p.-.update]/writs/newest/1/noun
           ==
         ==
-      ?.  ?=(%story -.content.q.post)  `this
-      ?.  ?=  [%story [~ [@ [%break ~] ~]]]
+      ?.  ?=  %story  
+          -.content.q.post  
+        `this
+      ?.  ?=  [%story [~ [[%link @ @] [%break ~] ~]]]
           content.q.post
         `this
-      =/  text=@t  -.q.p.content.q.post
-      ~&  text
-      `this
+      =/  newurl=@t  p.i.q.p.content.q.post
+      =/  newlink  :*
+                      url=newurl 
+                      path=`path:spaces-path`p.update
+                      date=now.bowl 
+                      poster=author.q.post
+                      likes=0 
+                      dislikes=0 
+                      liked=%.n
+                      disliked=%.n
+                      saved=%.n
+                      featured=%.n
+                   ==
+      :_  this(newsfeed :-(newlink newsfeed))
+      :~  :*  %give  %fact  
+              ~[/updates/(scot %p ship:path:newlink)/(scot %tas space:path:newlink)]  
+              %chronicle-update
+              !>(`update:chronicle`new+newlink)
+      ==  ==
     ==
     ::
       [%spaces-updates ~]
@@ -390,4 +409,17 @@
 ++  path-help
   |=  x=@ta
   x
+++  parse-url
+  |=  pos=@t
+  ^-  (unit @t)
+  =/  post=tape  (trip pos)
+  =/  urlpos  (find "http" post)
+  ?:  =(urlpos ~)
+    ~
+  =/  url=tape  (oust [0 +.urlpos] post)
+  =/  spacepos  (find " " post)
+  ?:  =(spacepos ~)
+    [~ (crip url)]
+  =.  url  (oust [+.spacepos 1.000.000] url)
+  [~ (crip url)]
 --

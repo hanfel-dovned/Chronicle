@@ -408,7 +408,6 @@ async function renderPage(links)
     myShip = links[0];
     activeSpace = "/~" + links[1].slice(1);
     spaceHost = activeSpace.split("/")[1];
-    console.log(spaceHost);
     links = links[2];
 
     for(var i = 0; i < links.length; i++)
@@ -437,13 +436,13 @@ function displayFeed(links) {
         FeaturedList.removeChild(FeaturedList.firstChild);
     }
 
-    if(group == "/")
+    if(group == "/~")
         FeaturedList.remove();
 
     for(var i = 0; i < links.length; i++)
     {
       //much of the code between these two branches is redundant
-      if(group != "/" && group != "Saved" && links[i][featuredi] == true)
+      if(group != "/~" && group != "Saved" && links[i][featuredi] == true)
       {
         const newArticle = document.createElement("div");
             newArticle.classList.add("featured");
@@ -660,7 +659,7 @@ function filterLinks(links, group) {
 
     for(var i = 0; i < links.length; i++)
     {
-      if(links[i][groupi] == group || group == "/" || (group == "Saved" && links[i][savedi] == true))
+      if(links[i][groupi] == group || group == "/~" || (group == "Saved" && links[i][savedi] == true))
         newLinks.push(links[i])
     }
 
