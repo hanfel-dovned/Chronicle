@@ -556,7 +556,7 @@ function createButtonHolder(links, i){
             featureButton.classList.add("button");
             featureButton.classList.add("feature-button");
             featureButton.trueIndex = links[i][indexi];
-            featureButton.disliked = links[i][featuredi];
+            featureButton.featured = links[i][featuredi];
             if(featureButton.featured == 0)
                 featureButton.textContent = "Feature";
             else
