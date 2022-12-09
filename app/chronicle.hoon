@@ -278,15 +278,22 @@
       ~&  update
       ?.  ?=(%flag -.-.update)  `this
       ?.  =(p:p:update our.bowl)  `this
+      ?:  =(read-id:update ~)  `this
       =/  post=(pair @da writ:chat)
         %-  head  %~  tap  by
         .^  (map @da writ:chat)
           %gx
-          ;:  welp
+          ;:  welp 
             /(scot %p our.bowl)/chat/(scot %da now.bowl)/chat
             /(scot %p p.p.-.update)/[q.p.-.update]/writs/newest/1/noun
-          ==
+          == 
         ==
+      =/  chatmap
+        .^  (map flag:chat chat:chat) 
+            %gx  
+            /(scot %p our.bowl)/chat/(scot %da now.bowl)/chats/noun
+        ==
+      =/  group  group:perm:(~(got by chatmap) p:update)
       ?.  ?=  %story  
           -.content.q.post  
         `this
@@ -296,7 +303,7 @@
       =/  newurl=@t  p.i.q.p.content.q.post
       =/  newlink  :*
                       url=newurl 
-                      path=`path:spaces-path`p.update
+                      path=`path:spaces-path`group
                       date=now.bowl 
                       poster=author.q.post
                       likes=0 
@@ -350,13 +357,18 @@
         `this
         ::
           %spaces-reaction
-        `this
-        ::=/  reaction  !<(reaction:spaces-store q.cage.sign)
-        ::?+    -.reaction  `this
-        ::    %remove
-        ::  :_  this
-        ::  ~[[%pass wire %agent [our.bowl %spaces] %leave ~]]
-        ::== 
+        =/  reaction  !<(reaction:spaces-store q.cage.sign)
+        ?+    -.reaction  `this
+            %remove
+          :-  ~[[%pass wire %agent [our.bowl %spaces] %leave ~]]
+          %=  this
+            newsfeed  %+  skip  newsfeed
+                      |=  =link:chronicle
+                      ?:  =(path:link wire)
+                        %.y
+                      %.n
+          ==
+        == 
       ==
     ==
     ::
@@ -409,17 +421,4 @@
 ++  path-help
   |=  x=@ta
   x
-++  parse-url
-  |=  pos=@t
-  ^-  (unit @t)
-  =/  post=tape  (trip pos)
-  =/  urlpos  (find "http" post)
-  ?:  =(urlpos ~)
-    ~
-  =/  url=tape  (oust [0 +.urlpos] post)
-  =/  spacepos  (find " " post)
-  ?:  =(spacepos ~)
-    [~ (crip url)]
-  =.  url  (oust [+.spacepos 1.000.000] url)
-  [~ (crip url)]
 --

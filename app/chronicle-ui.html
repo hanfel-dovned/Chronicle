@@ -405,10 +405,14 @@ var myShip = ''
 var spaceHost = ''
 async function renderPage(links)
 {
+    
     myShip = links[0];
-    activeSpace = "/~" + links[1].slice(1);
+    activeSpace = "/" + links[1].slice(1);
     spaceHost = activeSpace.split("/")[1];
     links = links[2];
+
+    console.log(links)
+    console.log(activeSpace)
 
     for(var i = 0; i < links.length; i++)
     {
@@ -447,10 +451,10 @@ function displayFeed(links) {
         const newArticle = document.createElement("div");
             newArticle.classList.add("featured");
 
-            const thumbnail = document.createElement("img");
+            /*const thumbnail = document.createElement("img");
                 thumbnail.classList.add("featured-thumbnail");
-                thumbnail.setAttribute('src', "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg");
-            newArticle.appendChild(thumbnail);
+                thumbnail.setAttribute('src', "https://pbs.twimg.com/profile_images/1576840276739489796/aIELtbXT_400x400.jpg");
+            newArticle.appendChild(thumbnail);*/
 
             articleTextBox = createArticleTextBox(links, i);
             newArticle.appendChild(articleTextBox); 
@@ -462,11 +466,11 @@ function displayFeed(links) {
         const newArticle = document.createElement("div");
             newArticle.classList.add("article");
 
-            const thumbnail = document.createElement("img");
+            /*const thumbnail = document.createElement("img");
                 thumbnail.classList.add("thumbnail");
                 //thumbnail.setAttribute('src', links[i][5]);   Thumbnail goes here
-                thumbnail.setAttribute('src', "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg");
-            newArticle.appendChild(thumbnail);
+                thumbnail.setAttribute('src', "https://pbs.twimg.com/profile_images/1576840276739489796/aIELtbXT_400x400.jpg");
+            newArticle.appendChild(thumbnail);*/
 
             articleTextBox = createArticleTextBox(links, i);
             newArticle.appendChild(articleTextBox); 
@@ -493,7 +497,7 @@ function createArticleTextBox(links, i){
         const metaText = document.createElement("div");
             metaText.classList.add("article-meta-text");
             // Site author goes here
-            metaText.textContent = links[i][datei].toLocaleDateString() + " - Washington Post - " + links[i][posteri];
+            metaText.textContent = links[i][datei].toLocaleDateString() + " " + links[i][posteri];
         articleMeta.appendChild(metaText);
     
     articleTextBox.appendChild(articleMeta);
