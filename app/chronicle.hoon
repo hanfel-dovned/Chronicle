@@ -277,7 +277,8 @@
       =/  update  !<([whom:chat brief:briefs:chat] q.cage.sign)
       ?.  ?=(%flag -.-.update)  `this
       ?.  =(p:p:update our.bowl)  `this
-      =/  post
+      =/  post=(pair @da writ:chat)
+        %-  head  %~  tap  by
         .^  (map @da writ:chat)
           %gx
           ;:  welp
@@ -285,7 +286,12 @@
             /(scot %p p.p.-.update)/[q.p.-.update]/writs/newest/1/noun
           ==
         ==
-      =/  text=@t  +766:post  ::Sorry, this is easiest
+      ?.  ?=(%story -.content.q.post)  `this
+      ?.  ?=  [%story [~ [@ [%break ~] ~]]]
+          content.q.post
+        `this
+      =/  text=@t  -.q.p.content.q.post
+      ~&  text
       `this
     ==
     ::
