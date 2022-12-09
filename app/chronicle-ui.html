@@ -451,10 +451,10 @@ function displayFeed(links) {
         const newArticle = document.createElement("div");
             newArticle.classList.add("featured");
 
-            /*const thumbnail = document.createElement("img");
+            const thumbnail = document.createElement("img");
                 thumbnail.classList.add("featured-thumbnail");
-                thumbnail.setAttribute('src', "https://pbs.twimg.com/profile_images/1576840276739489796/aIELtbXT_400x400.jpg");
-            newArticle.appendChild(thumbnail);*/
+                thumbnail.setAttribute('src', "https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large");
+            newArticle.appendChild(thumbnail);
 
             articleTextBox = createArticleTextBox(links, i);
             newArticle.appendChild(articleTextBox); 
@@ -466,11 +466,11 @@ function displayFeed(links) {
         const newArticle = document.createElement("div");
             newArticle.classList.add("article");
 
-            /*const thumbnail = document.createElement("img");
+            const thumbnail = document.createElement("img");
                 thumbnail.classList.add("thumbnail");
                 //thumbnail.setAttribute('src', links[i][5]);   Thumbnail goes here
-                thumbnail.setAttribute('src', "https://pbs.twimg.com/profile_images/1576840276739489796/aIELtbXT_400x400.jpg");
-            newArticle.appendChild(thumbnail);*/
+                thumbnail.setAttribute('src', "https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large");
+            newArticle.appendChild(thumbnail);
 
             articleTextBox = createArticleTextBox(links, i);
             newArticle.appendChild(articleTextBox); 
