@@ -306,7 +306,7 @@ select:hover {
 
 <body>
   <main>
-      <h1 id="title">Chronicle</h2>
+      <h1 id="title">Chronicle</h1>
       <div id="featured-list"></div>
       <br>
       <select id="dateChooser" onchange="filterByDate();">
@@ -386,8 +386,10 @@ var likedi = 6;
 var dislikedi = 7;
 var savedi = 8;
 var featuredi = 9;
-var indexi = 10;
-var ogdatei = 11;
+var titlei = 10;
+var imgurli = 11
+var indexi = 12;
+var ogdatei = 13;
 
 getState()
     .then((links) => renderPage(links))
@@ -440,20 +442,23 @@ function displayFeed(links) {
         FeaturedList.removeChild(FeaturedList.firstChild);
     }
 
-    if(group == "/~")
-        FeaturedList.remove();
+    //if(group == "/~")
+    //    FeaturedList.remove();
 
     for(var i = 0; i < links.length; i++)
     {
       //much of the code between these two branches is redundant
-      if(group != "/~" && group != "Saved" && links[i][featuredi] == true)
+      if((group != "/" && links[i][featuredi] == true) || (group == "/" && links[i][savedi] == true))
       {
         const newArticle = document.createElement("div");
             newArticle.classList.add("featured");
 
             const thumbnail = document.createElement("img");
                 thumbnail.classList.add("featured-thumbnail");
-                thumbnail.setAttribute('src', "https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large");
+                if(links[i][imgurli] != '')
+                    thumbnail.setAttribute('src', links[i][imgurli]);
+                else
+                    thumbnail.setAttribute('src', "https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large");
             newArticle.appendChild(thumbnail);
 
             articleTextBox = createArticleTextBox(links, i);
@@ -468,8 +473,10 @@ function displayFeed(links) {
 
             const thumbnail = document.createElement("img");
                 thumbnail.classList.add("thumbnail");
-                //thumbnail.setAttribute('src', links[i][5]);   Thumbnail goes here
-                thumbnail.setAttribute('src', "https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large");
+                if(links[i][imgurli] != '')
+                    thumbnail.setAttribute('src', links[i][imgurli]);
+                else
+                    thumbnail.setAttribute('src', "https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large");
             newArticle.appendChild(thumbnail);
 
             articleTextBox = createArticleTextBox(links, i);
@@ -486,8 +493,7 @@ function createArticleTextBox(links, i){
 
     const articleText = document.createElement("a");
         articleText.classList.add("article-text");
-        //articleText.textContent = links[i][0]; Post title goes here
-        articleText.textContent = links[i][0];
+        articleText.textContent = links[i][titlei];
         articleText.setAttribute('href', links[i][urli]);
 
     articleTextBox.appendChild(articleText);
@@ -663,7 +669,7 @@ function filterLinks(links, group) {
 
     for(var i = 0; i < links.length; i++)
     {
-      if(links[i][groupi] == group || group == "/~" || (group == "Saved" && links[i][savedi] == true))
+      if(links[i][groupi] == group || group == "/")
         newLinks.push(links[i])
     }
 

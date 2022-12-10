@@ -225,6 +225,8 @@
         [%b disliked:lin]
         [%b saved:lin]
         [%b featured:lin]
+        [%s title:lin]
+        [%s image-url:lin]
       ==
     ==
     ::
@@ -279,10 +281,10 @@
         %fact
       ?.  =(%chat-brief-update p.cage.sign)  `this
       =/  update  !<([whom:chat brief:briefs:chat] q.cage.sign)
-      ~&  update
       ?.  ?=(%flag -.-.update)  `this
       ?.  =(p:p:update our.bowl)  `this
       ?:  =(read-id:update ~)  `this
+      ::
       =/  post=(pair @da writ:chat)
         %-  head  %~  tap  by
         .^  (map @da writ:chat)
@@ -292,6 +294,7 @@
             /(scot %p p.p.-.update)/[q.p.-.update]/writs/newest/1/noun
           == 
         ==
+      ::
       =/  chatmap
         .^  (map flag:chat chat:chat) 
             %gx  
@@ -305,6 +308,11 @@
           content.q.post
         `this
       =/  newurl=@t  p.i.q.p.content.q.post
+      ::
+      =/  =request:http  [%'GET' newurl ~ ~]
+      =/  =task:iris  [%request request *outbound-config:iris]
+      =/  iris-card=card:agent:gall  [%pass /http-req/(scot %da now.bowl) %arvo %i task]
+      ::
       =/  newlink  :*
                       url=newurl 
                       path=`path:spaces-path`group
@@ -316,13 +324,17 @@
                       disliked=%.n
                       saved=%.n
                       featured=%.n
+                      title=newurl
+                      image-url=''
                    ==
       :_  this(newsfeed :-(newlink newsfeed))
-      :~  :*  %give  %fact  
+      :~  iris-card
+          :*  %give  %fact  
               ~[/updates/(scot %p ship:path:newlink)/(scot %tas space:path:newlink)]  
               %chronicle-update
               !>(`update:chronicle`new+newlink)
-      ==  ==
+          ==  
+      ==
     ==
     ::
       [%spaces-updates ~]
@@ -408,11 +420,77 @@
     ==
   ==
 ::
-++  on-arvo   on-arvo:def
+++  on-arvo
+  |=  [=wire =sign-arvo]
+  ^-  (quip card _this)
+  ?+    wire  `this
+      ::  Update link with metadata.
+      [%http-req @ ~]
+    ?+    -.sign-arvo  `this
+        %iris
+      ?+    +<.sign-arvo  `this
+          %http-response
+        ?+    -.client-response.sign-arvo  `this
+            %finished
+          =/  html  (trip `@t`+>+.full-file.client-response.sign-arvo)
+          =/  newtitle  (parse-title:hc html)
+          =/  newimg  (parse-image:hc html)
+          =/  i  (get-index-by-date newsfeed `@da`(slav %da +6:wire))
+          =/  old  ^-  link:chronicle  (snag i newsfeed)
+          =/  new  
+              ^-  link:chronicle  
+              %=  old
+                title  ?:  =(newtitle '')
+                         title:old
+                        newtitle
+                image-url  ?:  =(newimg '')
+                             image-url:old
+                           newimg
+              ==
+          :_  this(newsfeed (snap newsfeed i new))
+          :~  :*  
+              %give  %fact  ~[/updates/(scot %p ship:path:new)/(scot %tas space:path:new)]
+              %chronicle-update 
+              !>(`update:chronicle`[%edit date:new new])
+          ==  ==
+        ==
+      ==
+    ==
+  ==
+::
 ++  on-fail   on-fail:def
 --
 ::
 |%
+++  parse-title
+  |=  html=tape
+  ^-  @t
+  (parse-html html "og:title\" content=\"")
+::
+++  parse-image
+  |=  html=tape
+  ^-  @t
+  (parse-html html "og:image\" content=\"")
+::
+++  parse-html
+  |=  [html=tape element=tape]
+  ^-  @t
+  =/  found  (find element html)
+  ?:  =(found ~)
+    ''
+  =/  snip
+    %+  oust
+      :-  0
+      %+  add 
+        +.found
+      (lent element)
+    html
+  =|  title=tape
+  |-
+  ?:  =(-.snip '"')
+    (crip title)
+  $(snip +.snip, title (snoc title -.snip))
+::
 ++  get-links-by-space
   |=  [links=(list link:chronicle) =path:spaces-path]
   ^-  (list link:chronicle)

@@ -1,6 +1,19 @@
 /-  spaces-path
 |%
-+$  link  [url=@t =path:spaces-path date=@d poster=@p likes=@ud dislikes=@ud liked=? disliked=? saved=? featured=?]
++$  link  
+  $:  url=@t 
+      =path:spaces-path 
+      date=@d 
+      poster=@p 
+      likes=@ud 
+      dislikes=@ud 
+      liked=? 
+      disliked=? 
+      saved=? 
+      featured=?
+      title=@t
+      image-url=@t
+  ==
 +$  feed  (list link)
 +$  action
   $%  [%add =link]
