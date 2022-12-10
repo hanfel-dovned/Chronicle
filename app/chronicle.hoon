@@ -272,6 +272,10 @@
   ?+    wire  (on-agent:def wire sign)
       [%chats ~]
     ?+    -.sign  `this
+        %kick
+      :_  this
+      :~  [%pass /chats %agent [src.bowl %chat] %watch /briefs]  ==
+      ::
         %fact
       ?.  =(%chat-brief-update p.cage.sign)  `this
       =/  update  !<([whom:chat brief:briefs:chat] q.cage.sign)
@@ -323,6 +327,10 @@
     ::
       [%spaces-updates ~]
     ?+    -.sign  (on-agent:def wire sign)
+        %kick
+      :_  this
+      :~  [%pass wire %agent [src.bowl %spaces] %watch /spaces]  ==
+      ::
         %fact
       ?+    p.cage.sign  (on-agent:def wire sign)
           %spaces-reaction
@@ -351,6 +359,10 @@
     ::
       [%space @ @ ~]
     ?+    -.sign  (on-agent:def wire sign)
+        %kick
+      :_  this
+      :~  [%pass wire %agent [src.bowl %spaces] %watch /spaces/(path-help:hc +6:wire)/(path-help:hc +14:wire)]  ==
+      ::
         %fact
       ?+    p.cage.sign  (on-agent:def wire sign)
           %visa-reaction
@@ -374,6 +386,10 @@
     ::
       [%links @ @ ~]
     ?+    -.sign  `this
+        %kick
+      :_  this
+      :~  [%pass wire %agent [src.bowl %chronicle] %watch /spaces/(path-help:hc +6:wire)/(path-help:hc +14:wire)]  ==
+      ::
         %fact
       ?+    p.cage.sign  `this
           %chronicle-update
