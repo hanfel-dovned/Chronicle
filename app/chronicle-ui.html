@@ -557,9 +557,9 @@ function createButtonHolder(links, i){
         likeButton.trueIndex = links[i][indexi];
         likeButton.liked = links[i][likedi];
         if(likeButton.liked == 0)
-            likeButton.textContent = "Like";
+            likeButton.textContent = "Like (" + links[i][likesi] + ")";
         else
-            likeButton.textContent = "Liked";
+            likeButton.textContent = "Liked (" + links[i][likesi] + ")";
         likeButton.addEventListener('click', like);
     buttonHolder.appendChild(likeButton);
 
@@ -570,9 +570,9 @@ function createButtonHolder(links, i){
         dislikeButton.trueIndex = links[i][indexi];
         dislikeButton.disliked = links[i][dislikedi];
         if(dislikeButton.disliked == 0)
-            dislikeButton.textContent = "Dislike";
+            dislikeButton.textContent = "Dislike (" + links[i][dislikesi] + ")";
         else
-            dislikeButton.textContent = "Disliked";
+            dislikeButton.textContent = "Disliked (" + links[i][dislikesi] + ")";
         dislikeButton.addEventListener('click', dislike);
     buttonHolder.appendChild(dislikeButton);
 
