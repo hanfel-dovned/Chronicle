@@ -145,7 +145,7 @@ select:hover {
 }
 
 .article-text {
-    width: 578px;
+    width: 500px;
     height: 42px;
     
     font-family: 'Arial';
@@ -153,17 +153,35 @@ select:hover {
     font-weight: 500;
     font-size: 18px;
     line-height: 21px;
-    display: flex;
     align-items: center;
     text-decoration: none;
     
     color: #333333;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    overflow: hidden
+}
+
+.featured-text {
+    width: 227px;
+    height: 42px;
     
-    /* Inside auto layout */
+    font-family: 'Arial';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    align-items: center;
+    text-decoration: none;
     
-    flex: none;
-    order: 0;
-    flex-grow: 0;
+    color: #333333;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    overflow: hidden
 }
 
 .article-text:hover {
@@ -513,7 +531,10 @@ function createArticleTextBox(links, i, featured){
         articleTextBox.classList.add("article-text-box");
 
     const articleText = document.createElement("a");
-        articleText.classList.add("article-text");
+        if(featured == 1)
+            articleText.classList.add("featured-text");
+        else
+            articleText.classList.add("article-text");
         articleText.textContent = links[i][titlei];
         articleText.setAttribute('href', links[i][urli]);
 
