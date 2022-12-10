@@ -101,7 +101,7 @@
                 !>([%like date:action])
         ==  ==
         ::
-      =/  new  ^-  link:chronicle  old(likes +(likes:old))
+      =/  new  ^-  link:chronicle  old(likes +(likes:old), liked %.y)
       :_  state(newsfeed (snap newsfeed i new))
       :~  :*  
               %give  %fact  ~[/updates/(scot %p ship:path:new)/(scot %tas space:path:new)]
@@ -126,7 +126,7 @@
                 !>([%dislike date:action])
         ==  ==
         ::
-      =/  new  ^-  link:chronicle  old(dislikes +(dislikes:old))
+      =/  new  ^-  link:chronicle  old(dislikes +(dislikes:old), disliked %.y)
       :_  state(newsfeed (snap newsfeed i new))
       :~  :*  
               %give  %fact  ~[/updates/(scot %p ship:path:new)/(scot %tas space:path:new)]

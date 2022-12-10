@@ -40,7 +40,7 @@ main {
 }
 
 h1 {
-    width: 77px;
+    width: 500px;
     height: 21px;
     
     font-family: 'Arial';
@@ -49,8 +49,8 @@ h1 {
     font-size: 18px;
     line-height: 21px;
     display: flex;
-    align-items: center;
-    text-align: center;
+    align-items: left;
+    text-align: left;
     
     color: rgba(51, 51, 51, 0.9);
         
@@ -76,9 +76,12 @@ select:hover {
 }
 
 .title {
-  font-size: 84px;
+  font-size: 120px;
 }
 
+.featured-header {
+  font-size: 84px;
+}
 
 #article-list {
     display: flex;
@@ -102,6 +105,7 @@ select:hover {
     gap: 14px;
 
     width: 730px;
+    flex-wrap: wrap;
 
     flex: none;
     order: 0;
@@ -131,7 +135,7 @@ select:hover {
     padding: 0px;
     gap: 8px;
     
-    width: 578px;
+    width: 200px;
     height: 90px;
         
     flex: none;
@@ -154,7 +158,6 @@ select:hover {
     text-decoration: none;
     
     color: #333333;
-    
     
     /* Inside auto layout */
     
@@ -240,7 +243,7 @@ select:hover {
     gap: 10px;
 
     width: 227px;
-    height: 173px;
+    height: 226px;
 
     flex: none;
     order: 0;
@@ -260,16 +263,16 @@ select:hover {
     flex-grow: 0;
 }
 
-.featured-textbox {
+.featured-text-box {    
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 0px;
-    gap: 6px;
-
+    gap: 8px;
+    
     width: 227px;
-    height: 48px;
-
+    height: 90px;
+        
     flex: none;
     order: 1;
     align-self: stretch;
@@ -307,8 +310,8 @@ select:hover {
 <body>
   <main>
       <h1 id="title">Chronicle</h1>
+      <h1 id="featured-header">Featured</h2>
       <div id="featured-list"></div>
-      <br>
       <select id="dateChooser" onchange="filterByDate();">
         <option value="Chrono">Chronological</option>
         <option value="Day">Popular (Day)</option>
@@ -406,15 +409,23 @@ var activeSpace = '/'
 var myShip = ''
 var spaceHost = ''
 async function renderPage(links)
-{
-    
+{   
     myShip = links[0];
     activeSpace = "/" + links[1].slice(1);
     spaceHost = activeSpace.split("/")[1];
     links = links[2];
 
-    console.log(links)
-    console.log(activeSpace)
+    const title = document.getElementById("title");
+    if(activeSpace == "/")
+        title.textContent = myShip;
+    else
+        title.textContent = activeSpace;
+
+    const featuredHeader = document.getElementById("featured-header");
+    if(activeSpace == "/")
+        featuredHeader.textContent = "Saved Links";
+    else
+    featuredHeader.textContent = "Featured Links";
 
     for(var i = 0; i < links.length; i++)
     {
@@ -442,8 +453,7 @@ function displayFeed(links) {
         FeaturedList.removeChild(FeaturedList.firstChild);
     }
 
-    //if(group == "/~")
-    //    FeaturedList.remove();
+    var removeFeatured = 1;
 
     for(var i = 0; i < links.length; i++)
     {
@@ -461,10 +471,12 @@ function displayFeed(links) {
                     thumbnail.setAttribute('src', "https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large");
             newArticle.appendChild(thumbnail);
 
-            articleTextBox = createArticleTextBox(links, i);
+            articleTextBox = createArticleTextBox(links, i, 1);
             newArticle.appendChild(articleTextBox); 
 
         FeaturedList.appendChild(newArticle);
+
+        removeFeatured = 0;
       }
       else
       {
@@ -479,17 +491,26 @@ function displayFeed(links) {
                     thumbnail.setAttribute('src', "https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large");
             newArticle.appendChild(thumbnail);
 
-            articleTextBox = createArticleTextBox(links, i);
+            articleTextBox = createArticleTextBox(links, i, 0);
             newArticle.appendChild(articleTextBox); 
 
         ArticleList.appendChild(newArticle);
       }
     }
+
+    if(removeFeatured == 1)
+    {
+        FeaturedList.remove();
+        document.getElementById("featured-header").remove();
+    }
 }
 
-function createArticleTextBox(links, i){
+function createArticleTextBox(links, i, featured){
     const articleTextBox = document.createElement("div");
-    articleTextBox.classList.add("article-text-box");
+    if(featured == 1)
+        articleTextBox.classList.add("featured-text-box");
+    else
+        articleTextBox.classList.add("article-text-box");
 
     const articleText = document.createElement("a");
         articleText.classList.add("article-text");
