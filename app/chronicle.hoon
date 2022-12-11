@@ -5,7 +5,7 @@
 +$  versioned-state
   $%  state-0
   ==
-+$  state-0  [%0 active-space=path newsfeed=feed:chronicle]
++$  state-0  [%0 active-space=@t newsfeed=feed:chronicle]
 +$  card  card:agent:gall
 -- 
 %-  agent:dbug
@@ -180,11 +180,11 @@
           [%apps %chronicle ~]
         =/  urltape  (trip url.request.inbound-request)
         =/  query
-          ^-  path
+          ^-  @t
           |-
-          ?~  urltape  ~
+          ?~  urltape  ''
           ?:  =(-.urltape '=')
-            (stab (crip +.urltape))
+            (crip +.urltape)
           $(urltape +.urltape)
         :_  state(active-space query)
         %-  send  
@@ -203,12 +203,12 @@
   ::              
   ++  enjs-state
     =,  enjs:format
-    |=  [active=^path fee=feed:chronicle]
+    |=  [active=@t fee=feed:chronicle]
     ^-  json
     :-  %a
     :~
       [%s (scot %p our.bowl)]
-      (path active)
+      [%s active]
       :-  %a
       %+  turn
         fee
