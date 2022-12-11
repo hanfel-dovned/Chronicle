@@ -1,0 +1,4 @@
+:~  size+[5 10]
+    titlebar-border+%.n
+    show-titlebar+%.n
+==

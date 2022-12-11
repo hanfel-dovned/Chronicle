@@ -16,6 +16,8 @@ body {
     flex-grow: 1;
 
     margin:auto;
+
+    background-color: var(--rlm-card-color);
 }
 
 main {
@@ -136,7 +138,7 @@ select:hover {
     gap: 8px;
     
     width: 200px;
-    height: 90px;
+    height: 80px;
         
     flex: none;
     order: 1;
@@ -197,7 +199,7 @@ select:hover {
     gap: 10px;
     
     width: 300px;
-    height: 17px;
+    height: 25px;
         
     flex: none;
     order: 1;
@@ -298,14 +300,14 @@ select:hover {
 }
 
 .button {
-    border: none;
+    border: 1px;
     color: white;
     padding: 1px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 12px;
-    margin: 4px 2px;
+    margin: 4px 4px;
     cursor: pointer;
     border-radius: 6px;
     width: 50px;
@@ -426,24 +428,27 @@ var currentLinks = []
 var activeSpace = '/'
 var myShip = ''
 var spaceHost = ''
+var ourSpace = ''
 async function renderPage(links)
 {   
     myShip = links[0];
-    activeSpace = "/" + links[1].slice(1);
+    ourSpace = "/" + myShip + "/our";
+    //activeSpace = "/" + links[1].slice(1);
+    activeSpace = links[1];
     spaceHost = activeSpace.split("/")[1];
     links = links[2];
 
     const title = document.getElementById("title");
-    if(activeSpace == "/")
+    if(activeSpace == ourSpace)
         title.textContent = myShip;
     else
         title.textContent = activeSpace;
 
     const featuredHeader = document.getElementById("featured-header");
-    if(activeSpace == "/")
+    if(activeSpace == ourSpace)
         featuredHeader.textContent = "Saved Links";
     else
-    featuredHeader.textContent = "Featured Links";
+        featuredHeader.textContent = "Featured Links";
 
     for(var i = 0; i < links.length; i++)
     {
@@ -476,7 +481,7 @@ function displayFeed(links) {
     for(var i = 0; i < links.length; i++)
     {
       //much of the code between these two branches is redundant
-      if((group != "/" && links[i][featuredi] == true) || (group == "/" && links[i][savedi] == true))
+      if((group != ourSpace && links[i][featuredi] == true) || (group == ourSpace && links[i][savedi] == true))
       {
         const newArticle = document.createElement("div");
             newArticle.classList.add("featured");
@@ -578,9 +583,9 @@ function createButtonHolder(links, i){
         likeButton.trueIndex = links[i][indexi];
         likeButton.liked = links[i][likedi];
         if(likeButton.liked == 0)
-            likeButton.textContent = "Like (" + links[i][likesi] + ")";
+            likeButton.textContent = "Like"; // (" + links[i][likesi] + ")";
         else
-            likeButton.textContent = "Liked (" + links[i][likesi] + ")";
+            likeButton.textContent = "Liked"; // (" + links[i][likesi] + ")";
         likeButton.addEventListener('click', like);
     buttonHolder.appendChild(likeButton);
 
@@ -591,9 +596,9 @@ function createButtonHolder(links, i){
         dislikeButton.trueIndex = links[i][indexi];
         dislikeButton.disliked = links[i][dislikedi];
         if(dislikeButton.disliked == 0)
-            dislikeButton.textContent = "Dislike (" + links[i][dislikesi] + ")";
+            dislikeButton.textContent = "Dislike"; //(" + links[i][dislikesi] + ")";
         else
-            dislikeButton.textContent = "Disliked (" + links[i][dislikesi] + ")";
+            dislikeButton.textContent = "Disliked"; // (" + links[i][dislikesi] + ")";
         dislikeButton.addEventListener('click', dislike);
     buttonHolder.appendChild(dislikeButton);
 
@@ -711,7 +716,7 @@ function filterLinks(links, group) {
 
     for(var i = 0; i < links.length; i++)
     {
-      if(links[i][groupi] == group || group == "/")
+      if(links[i][groupi] == group || group == ourSpace)
         newLinks.push(links[i])
     }
 
