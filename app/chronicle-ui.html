@@ -186,6 +186,10 @@ select:hover {
     overflow: hidden
 }
 
+.featured-text:hover {
+    color: #777777;
+}
+
 .article-text:hover {
     color: #777777;
 }
@@ -221,23 +225,6 @@ select:hover {
         
     flex: none;
     order: 0;
-    flex-grow: 0;
-}
-
-.button-holder {    
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 0px;
-    gap: 10px;
-    
-    width: 200px;
-    height: 17px;
-        
-    flex: none;
-    order: 1;
-    align-self: stretch;
     flex-grow: 0;
 }
 
@@ -299,29 +286,33 @@ select:hover {
     flex-grow: 0;
 }
 
-.button {
-    border: 1px;
-    color: white;
-    padding: 1px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 12px;
-    margin: 4px 4px;
-    cursor: pointer;
-    border-radius: 6px;
-    width: 50px;
-    height: 20px;
+.button-holder {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 17px;
 }
 
-.save-button {background-color: #4CAF50;}
-.save-button:hover { background-color: #3e8a40;}
-.like-button {background-color: #4287f5;}
-.like-button:hover { background-color: #2d77ed;}
-.dislike-button {background-color: #ed2d2d;}
-.dislike-button:hover { background-color: #c91c1c; }
-.feature-button {background-color: #a40097;}
-.feature-button:hover { background-color: #810076; }
+.button {
+  width: 25%; /* adjust as needed to make the buttons the desired size */
+  height: 20px; /* adjust as needed to make the buttons the desired size */
+
+  color: white;
+  font-size: 8px;
+  border: 1px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.save-button {background-color: #65af68;}
+.save-button:hover { background-color: #3e8d40;}
+.like-button {background-color: #6ca3fb;}
+.like-button:hover { background-color: #3f87fa;}
+.dislike-button {background-color: #f24d4d;}
+.dislike-button:hover { background-color: #d42424; }
+.feature-button {background-color: #b847af;}
+.feature-button:hover { background-color: #ad009f; }
+.invisible-button {background-color: #ffffff00; color: #ffffff00}
 
 
 </style>
@@ -334,10 +325,10 @@ select:hover {
       <div id="featured-list"></div>
       <select id="dateChooser" onchange="filterByDate();">
         <option value="Chrono">Chronological</option>
-        <option value="Day">Popular (Day)</option>
-        <option value="Week">Popular (Week)</option>
-        <option value="Month">Popular (Month)</option>
-        <option value="All-time">Popular (All-time)</option>
+        <option value="Day">Liked (Day)</option>
+        <option value="Week">Liked (Week)</option>
+        <option value="Month">Liked (Month)</option>
+        <option value="All-time">Liked (All-time)</option>
       </select>
       <div id="article-list"></div>
       <script>
@@ -363,9 +354,6 @@ function post(tag, data) {
     })
     location.reload()
 }
-
-const blessing = document.getElementById("blessing");
-const interrogate = document.getElementById("interrogate");
 
 function postSave(date)
 {
@@ -423,12 +411,24 @@ async function getState() {
     return response.json()
 }
 
+var defaultThumbnails = [ 
+    'https://pbs.twimg.com/media/FjadxrpX0AAAb_w?format=jpg&name=medium',
+    'https://pbs.twimg.com/media/FgK6CwhWIAApbWt?format=jpg&name=large',
+    'https://pbs.twimg.com/media/FeeigkoXkAQuWhu?format=jpg&name=4096x4096',
+    'https://pbs.twimg.com/media/Fa3El9fWAAIcwIC?format=jpg&name=medium',
+    'https://pbs.twimg.com/media/FSZv1AHXIAAe_Jn?format=jpg&name=large',
+    'https://pbs.twimg.com/media/Fd6pUT3XgAUWPWu?format=jpg&name=medium',
+    'https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large',
+]
+
+
 var originalLinks = []
 var currentLinks = []
 var activeSpace = '/'
 var myShip = ''
 var spaceHost = ''
 var ourSpace = ''
+var featuredHeaderText;
 async function renderPage(links)
 {   
     myShip = links[0];
@@ -446,9 +446,11 @@ async function renderPage(links)
 
     const featuredHeader = document.getElementById("featured-header");
     if(activeSpace == ourSpace)
-        featuredHeader.textContent = "Saved Links";
+        featuredHeaderText = "Saved Links";
     else
-        featuredHeader.textContent = "Featured Links";
+        featuredHeaderText = "Featured by " + spaceHost;
+
+    featuredHeader.textContent = featuredHeaderText;
 
     for(var i = 0; i < links.length; i++)
     {
@@ -491,7 +493,7 @@ function displayFeed(links) {
                 if(links[i][imgurli] != '')
                     thumbnail.setAttribute('src', links[i][imgurli]);
                 else
-                    thumbnail.setAttribute('src', "https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large");
+                    thumbnail.setAttribute('src', defaultThumbnails[Math.floor(Math.random()*defaultThumbnails.length)]);
             newArticle.appendChild(thumbnail);
 
             articleTextBox = createArticleTextBox(links, i, 1);
@@ -511,7 +513,7 @@ function displayFeed(links) {
                 if(links[i][imgurli] != '')
                     thumbnail.setAttribute('src', links[i][imgurli]);
                 else
-                    thumbnail.setAttribute('src', "https://pbs.twimg.com/media/FiXLyWEXoAACWb1?format=jpg&name=large");
+                    thumbnail.setAttribute('src', defaultThumbnails[Math.floor(Math.random()*defaultThumbnails.length)]);
             newArticle.appendChild(thumbnail);
 
             articleTextBox = createArticleTextBox(links, i, 0);
@@ -522,10 +524,10 @@ function displayFeed(links) {
     }
 
     if(removeFeatured == 1)
-    {
-        FeaturedList.remove();
-        document.getElementById("featured-header").remove();
-    }
+        document.getElementById("featured-header").textContent = "";
+    else
+        document.getElementById("featured-header").textContent = featuredHeaderText;
+
 }
 
 function createArticleTextBox(links, i, featured){
@@ -563,48 +565,12 @@ function createArticleTextBox(links, i, featured){
 
 function createButtonHolder(links, i){
     const buttonHolder = document.createElement("div")
-    buttonHolder.classList.add("article-meta");
-    const saveButton = document.createElement("button");
-        saveButton.classList.add("button");
-        saveButton.classList.add("save-button");
-        saveButton.trueIndex = links[i][indexi];
-        saveButton.saved = links[i][savedi];
-        if(saveButton.saved == 0)
-            saveButton.textContent = "Save";
-        else
-            saveButton.textContent = "Saved";
-        saveButton.addEventListener('click', save);
-    buttonHolder.appendChild(saveButton);
 
+    buttonHolder.classList.add("article-meta");
     buttonHolder.classList.add("button-holder");
-    const likeButton = document.createElement("button");
-        likeButton.classList.add("button");
-        likeButton.classList.add("like-button");
-        likeButton.trueIndex = links[i][indexi];
-        likeButton.liked = links[i][likedi];
-        if(likeButton.liked == 0)
-            likeButton.textContent = "Like"; // (" + links[i][likesi] + ")";
-        else
-            likeButton.textContent = "Liked"; // (" + links[i][likesi] + ")";
-        likeButton.addEventListener('click', like);
-    buttonHolder.appendChild(likeButton);
 
-    buttonHolder.classList.add("article-meta");
-    const dislikeButton = document.createElement("button");
-        dislikeButton.classList.add("button");
-        dislikeButton.classList.add("dislike-button");
-        dislikeButton.trueIndex = links[i][indexi];
-        dislikeButton.disliked = links[i][dislikedi];
-        if(dislikeButton.disliked == 0)
-            dislikeButton.textContent = "Dislike"; //(" + links[i][dislikesi] + ")";
-        else
-            dislikeButton.textContent = "Disliked"; // (" + links[i][dislikesi] + ")";
-        dislikeButton.addEventListener('click', dislike);
-    buttonHolder.appendChild(dislikeButton);
-
-    if(myShip == spaceHost)
+    if(myShip == spaceHost && activeSpace != ourSpace)
     {
-        buttonHolder.classList.add("article-meta");
         const featureButton = document.createElement("button");
             featureButton.classList.add("button");
             featureButton.classList.add("feature-button");
@@ -617,6 +583,53 @@ function createButtonHolder(links, i){
             featureButton.addEventListener('click', feature);
         buttonHolder.appendChild(featureButton);
     }
+
+    const saveButton = document.createElement("button");
+        saveButton.classList.add("button");
+        saveButton.classList.add("save-button");
+        saveButton.trueIndex = links[i][indexi];
+        saveButton.saved = links[i][savedi];
+        if(saveButton.saved == 0)
+            saveButton.textContent = "Save";
+        else
+            saveButton.textContent = "Saved";
+        saveButton.addEventListener('click', save);
+    buttonHolder.appendChild(saveButton);
+
+
+        const likeButton = document.createElement("button");
+            likeButton.classList.add("button");
+
+            if(links[i][likedi] == 0 && links[i][dislikedi] == 0)
+                likeButton.classList.add("like-button");
+            else
+                likeButton.classList.add("invisible-button");
+
+            likeButton.trueIndex = links[i][indexi];
+            likeButton.liked = links[i][likedi];
+            if(likeButton.liked == 0)
+                likeButton.textContent = "Like"; // (" + links[i][likesi] + ")";
+            else
+                likeButton.textContent = "Liked"; // (" + links[i][likesi] + ")";
+            likeButton.addEventListener('click', like);
+        buttonHolder.appendChild(likeButton);
+
+        const dislikeButton = document.createElement("button");
+            dislikeButton.classList.add("button");
+
+            if(links[i][likedi] == 0 && links[i][dislikedi] == 0)
+                dislikeButton.classList.add("dislike-button");
+            else
+                dislikeButton.classList.add("invisible-button");
+
+            dislikeButton.trueIndex = links[i][indexi];
+            dislikeButton.disliked = links[i][dislikedi];
+            if(dislikeButton.disliked == 0)
+                dislikeButton.textContent = "Dislike"; //(" + links[i][dislikesi] + ")";
+            else
+                dislikeButton.textContent = "Disliked"; // (" + links[i][dislikesi] + ")";
+            dislikeButton.addEventListener('click', dislike);
+        buttonHolder.appendChild(dislikeButton);
 
     return buttonHolder;
 }
@@ -662,6 +675,19 @@ function like(){
     postLike(link[ogdatei]);
 
     event.currentTarget.textContent = "Liked";
+    event.currentTarget.classList.remove("like-button");
+    event.currentTarget.classList.add("invisible-button");
+
+    // Get the button-holder element that contains the Like button
+    var buttonHolder = this.closest(".button-holder");
+
+    // Find the Dislike button inside the button-holder element
+    var dislikeButton = buttonHolder.querySelector(".dislike-button");
+
+    // Add the invisible-button class to the Dislike button
+    dislikeButton.classList.remove("dislike-button");
+    dislikeButton.classList.add("invisible-button");
+
     event.currentTarget.liked = 1;
     originalLinks[index][likedi] = true;
 }
@@ -680,6 +706,19 @@ function dislike(){
     postDislike(link[ogdatei]);
 
     event.currentTarget.textContent = "Disliked";
+    event.currentTarget.classList.remove("dislike-button");
+    event.currentTarget.classList.add("invisible-button");
+
+    // Get the button-holder element that contains the Like button
+    var buttonHolder = this.closest(".button-holder");
+
+    // Find the Dislike button inside the button-holder element
+    var dislikeButton = buttonHolder.querySelector(".like-button");
+
+    // Add the invisible-button class to the Dislike button
+    dislikeButton.classList.remove("like-button");
+    dislikeButton.classList.add("invisible-button");
+
     event.currentTarget.disliked = 1;
     originalLinks[index][dislikedi] = true;
 }
