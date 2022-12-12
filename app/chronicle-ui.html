@@ -1,5 +1,8 @@
 <head>
   <style>
+
+html {background-color: var(--rlm-window-color);}
+
 body {
     display: flex;
     flex-direction: column;
@@ -54,7 +57,7 @@ h1 {
     width: 500px;
     height: 21px;
     
-    font-family: 'Arial';
+    font-family: var(--rlm-font);
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
@@ -71,7 +74,7 @@ h1 {
 }
 
 select {
-  font-family: 'Arial';
+  font-family: var(--rlm-font);
   font-style: normal;
   font-weight: 600;
   font-size: 18px;
@@ -176,7 +179,7 @@ select:hover {
     width: 500px;
     height: 42px;
     
-    font-family: 'Arial';
+    font-family: var(--rlm-font);
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
@@ -196,7 +199,7 @@ select:hover {
     width: 227px;
     height: 42px;
     
-    font-family: 'Arial';
+    font-family: var(--rlm-font);
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
@@ -238,7 +241,7 @@ select:hover {
 }
 
 .article-meta-text {
-    font-family: 'Arial';
+    font-family: var(--rlm-font);
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
@@ -266,6 +269,8 @@ select:hover {
     flex: none;
     order: 0;
     flex-grow: 0;
+
+    object-fit: cover;
 }
 
 .featured {
@@ -294,6 +299,8 @@ select:hover {
     order: 0;
     align-self: stretch;
     flex-grow: 0;
+
+    object-fit: cover;
 }
 
 .featured-text-box {    
@@ -320,34 +327,26 @@ select:hover {
 }
 
 .button {
-  width: 25%; /* adjust as needed to make the buttons the desired size */
-  height: 20px; /* adjust as needed to make the buttons the desired size */
+  width: 25%;
+  height: 20px;
 
-  color: var(--rlm-text-color);
+  background-color: var(--rlm-card-color);
   font-size: 8px;
   font-weight: 600;
   border: 1px;
   border-radius: 6px;
   text-align: center;
 }
+.button:hover {background-color: var(--rlm-accent-color);}
 
-.save-button {background-color: var(--rlm-icon-color);}
-.save-button:hover { background-color: #919191;}
-.like-button {background-color: var(--rlm-icon-color);}
-.like-button:hover { background-color: #919191;}
-.dislike-button {background-color: var(--rlm-icon-color);}
-.dislike-button:hover { background-color: #919191;}
-.feature-button {background-color: var(--rlm-icon-color);}
-.feature-button:hover { background-color: #919191;}
 .invisible-button {background-color: #ffffff00; color: #ffffff00}
-
+.invisible-button:hover {background-color: #ffffff00; color: #ffffff00}
 
 </style>
 </head>
 
 <body>
   <main>
-      <h1 id="title">Chronicle</h1>
       <h1 id="featured-header">Featured</h2>
       <div id="featured-list"></div>
       <select id="dateChooser" onchange="filterByDate();">
@@ -442,6 +441,13 @@ var defaultThumbnails = [
 ]
 
 
+var saveButtonSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="fill: var(--rlm-icon-color);"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 2h14a1 1 0 0 1 1 1v19.143a.5.5 0 0 1-.766.424L12 18.03l-7.234 4.536A.5.5 0 0 1 4 22.143V3a1 1 0 0 1 1-1zm13 2H6v15.432l6-3.761 6 3.761V4z"/></svg>';
+var saveButtonFillSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="fill: var(--rlm-icon-color);"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 2h14a1 1 0 0 1 1 1v19.143a.5.5 0 0 1-.766.424L12 18.03l-7.234 4.536A.5.5 0 0 1 4 22.143V3a1 1 0 0 1 1-1z"/></svg>'
+var likeButtonSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="fill: var(--rlm-icon-color);"><path fill="none" d="M0 0h24v24H0z"/><path d="M14.6 8H21a2 2 0 0 1 2 2v2.104a2 2 0 0 1-.15.762l-3.095 7.515a1 1 0 0 1-.925.619H2a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1h3.482a1 1 0 0 0 .817-.423L11.752.85a.5.5 0 0 1 .632-.159l1.814.907a2.5 2.5 0 0 1 1.305 2.853L14.6 8zM7 10.588V19h11.16L21 12.104V10h-6.4a2 2 0 0 1-1.938-2.493l.903-3.548a.5.5 0 0 0-.261-.571l-.661-.33-4.71 6.672c-.25.354-.57.644-.933.858zM5 11H3v8h2v-8z"/></svg>'
+var dislikeButtonSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="fill: var(--rlm-icon-color);"><path fill="none" d="M0 0h24v24H0z"/><path d="M9.4 16H3a2 2 0 0 1-2-2v-2.104a2 2 0 0 1 .15-.762L4.246 3.62A1 1 0 0 1 5.17 3H22a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3.482a1 1 0 0 0-.817.423l-5.453 7.726a.5.5 0 0 1-.632.159L9.802 22.4a2.5 2.5 0 0 1-1.305-2.853L9.4 16zm7.6-2.588V5H5.84L3 11.896V14h6.4a2 2 0 0 1 1.938 2.493l-.903 3.548a.5.5 0 0 0 .261.571l.661.33 4.71-6.672c.25-.354.57-.644.933-.858zM19 13h2V5h-2v8z"/></svg>'
+var featureButtonSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="fill: var(--rlm-icon-color);"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928L12 18.26zm0-2.292l4.247 2.377-.949-4.773 3.573-3.305-4.833-.573L12 5.275l-2.038 4.42-4.833.572 3.573 3.305-.949 4.773L12 15.968z"/></svg>'
+var featureButtonFillSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="fill: var(--rlm-icon-color)";><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/></svg>'
+
 var originalLinks = []
 var currentLinks = []
 var activeSpace = '/'
@@ -458,11 +464,12 @@ async function renderPage(links)
     spaceHost = activeSpace.split("/")[1];
     links = links[2];
 
-    const title = document.getElementById("title");
-    if(activeSpace == ourSpace)
+    //const title = document.getElementById("title");
+    /*if(activeSpace == ourSpace)
         title.textContent = myShip;
     else
-        title.textContent = activeSpace;
+        title.textContent = activeSpace;*/
+    //title.textContent = '';
 
     const featuredHeader = document.getElementById("featured-header");
     if(activeSpace == ourSpace)
@@ -486,8 +493,6 @@ async function renderPage(links)
 
     for(var i = 0; i < links.length; i++)
         links[i][indexi] = i;    //trueIndex - indexi
-
-    console.log(links);
 
     originalLinks = links;
     currentLinks = filterLinks(originalLinks, activeSpace);
@@ -595,61 +600,56 @@ function createButtonHolder(links, i){
     {
         const featureButton = document.createElement("button");
             featureButton.classList.add("button");
-            featureButton.classList.add("feature-button");
             featureButton.trueIndex = links[i][indexi];
             featureButton.featured = links[i][featuredi];
-            if(featureButton.featured == 0)
-                featureButton.textContent = "Feature";
+            if(featureButton.featured == 1)
+                featureButton.innerHTML = featureButtonFillSVG;
             else
-                featureButton.textContent = "Featured";
+                featureButton.innerHTML = featureButtonSVG;
             featureButton.addEventListener('click', feature);
         buttonHolder.appendChild(featureButton);
     }
 
+
     const saveButton = document.createElement("button");
         saveButton.classList.add("button");
-        saveButton.classList.add("save-button");
         saveButton.trueIndex = links[i][indexi];
         saveButton.saved = links[i][savedi];
-        if(saveButton.saved == 0)
-            saveButton.textContent = "Save";
+        saveButton.innerHTML = saveButtonSVG;
+        if(saveButton.saved == 1)
+            saveButton.innerHTML = saveButtonFillSVG;
         else
-            saveButton.textContent = "Saved";
+            saveButton.innerHTML = saveButtonSVG;
         saveButton.addEventListener('click', save);
     buttonHolder.appendChild(saveButton);
 
 
     const likeButton = document.createElement("button");
         likeButton.classList.add("button");
+        likeButton.classList.add("like-button");
 
-        if(links[i][likedi] == 0 && links[i][dislikedi] == 0)
-            likeButton.classList.add("like-button");
-        else
+        if(links[i][likedi] == 1 || links[i][dislikedi] == 1)
             likeButton.classList.add("invisible-button");
+        else
+            likeButton.innerHTML = likeButtonSVG;
 
         likeButton.trueIndex = links[i][indexi];
         likeButton.liked = links[i][likedi];
-        if(likeButton.liked == 0)
-            likeButton.textContent = "Like"; // (" + links[i][likesi] + ")";
-        else
-            likeButton.textContent = "Liked"; // (" + links[i][likesi] + ")";
         likeButton.addEventListener('click', like);
     buttonHolder.appendChild(likeButton);
 
+
     const dislikeButton = document.createElement("button");
         dislikeButton.classList.add("button");
+        dislikeButton.classList.add("dislike-button");
 
-        if(links[i][likedi] == 0 && links[i][dislikedi] == 0)
-            dislikeButton.classList.add("dislike-button");
-        else
+        if(links[i][likedi] == 1 || links[i][dislikedi] == 1)
             dislikeButton.classList.add("invisible-button");
+        else
+            dislikeButton.innerHTML = dislikeButtonSVG;
 
         dislikeButton.trueIndex = links[i][indexi];
         dislikeButton.disliked = links[i][dislikedi];
-        if(dislikeButton.disliked == 0)
-            dislikeButton.textContent = "Dislike"; //(" + links[i][dislikesi] + ")";
-        else
-            dislikeButton.textContent = "Disliked"; // (" + links[i][dislikesi] + ")";
         dislikeButton.addEventListener('click', dislike);
     buttonHolder.appendChild(dislikeButton);
 
@@ -671,13 +671,11 @@ function save(){
 
     if(event.currentTarget.saved == 0)
     {
-        event.currentTarget.textContent = "Saved";
         event.currentTarget.saved = 1;
         originalLinks[index][savedi] = true;
     }
     else
     {
-        event.currentTarget.textContent = "Save";
         event.currentTarget.saved = 0;
         originalLinks[index][savedi] = false;
     }
@@ -699,20 +697,18 @@ function like(){
 
     postLike(link[ogdatei]);
 
-    event.currentTarget.textContent = "Liked";
     event.currentTarget.classList.remove("like-button");
     event.currentTarget.classList.add("invisible-button");
 
-    // Get the button-holder element that contains the Like button
     var buttonHolder = this.closest(".button-holder");
-
-    // Find the Dislike button inside the button-holder element
     var dislikeButton = buttonHolder.querySelector(".dislike-button");
 
-    // Add the invisible-button class to the Dislike button
     dislikeButton.classList.remove("dislike-button");
     dislikeButton.classList.add("invisible-button");
 
+    event.currentTarget.innerHTML = '';
+    dislikeButton.innerHTML = '';
+  
     event.currentTarget.liked = 1;
     originalLinks[index][likedi] = true;
 }
@@ -730,19 +726,17 @@ function dislike(){
 
     postDislike(link[ogdatei]);
 
-    event.currentTarget.textContent = "Disliked";
     event.currentTarget.classList.remove("dislike-button");
     event.currentTarget.classList.add("invisible-button");
 
-    // Get the button-holder element that contains the Like button
     var buttonHolder = this.closest(".button-holder");
-
-    // Find the Dislike button inside the button-holder element
     var likeButton = buttonHolder.querySelector(".like-button");
 
-    // Add the invisible-button class to the Dislike button
     likeButton.classList.remove("like-button");
     likeButton.classList.add("invisible-button");
+
+    event.currentTarget.innerHTML = '';
+    likeButton.innerHTML = '';
 
     event.currentTarget.disliked = 1;
     originalLinks[index][dislikedi] = true;
@@ -763,13 +757,11 @@ function feature(){
 
     if(event.currentTarget.featured == 0)
     {
-        event.currentTarget.textContent = "Featured";
         event.currentTarget.featured = 1;
         originalLinks[index][featuredi] = true;
     }
     else
     {
-        event.currentTarget.textContent = "Feature";
         event.currentTarget.featured = 0;
         originalLinks[index][featuredi] = false;
     }
