@@ -1,4 +1,5 @@
 <head>
+<link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500&display=swap" rel="stylesheet" />
   <style>
 
 html {background-color: var(--rlm-window-color);}
@@ -59,8 +60,8 @@ h1 {
     
     font-family: var(--rlm-font);
     font-style: normal;
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 24px;
     line-height: 21px;
     display: flex;
     align-items: left;
@@ -76,8 +77,8 @@ h1 {
 select {
   font-family: var(--rlm-font);
   font-style: normal;
-  font-weight: 600;
-  font-size: 18px;
+  font-weight: 500;
+  font-size: 24px;
 
   color: var(--rlm-text-color);
   background-color: var(--rlm-card-color);
@@ -110,10 +111,6 @@ select:hover {
   font-size: 120px;
 }
 
-.featured-header {
-  font-size: 84px;
-}
-
 #article-list {
     display: flex;
     flex-direction: column;
@@ -133,7 +130,7 @@ select:hover {
     flex-direction: row;
     align-items: flex-start;
     padding: 0px;
-    gap: 14px;
+    gap: 5px 28px;
 
     width: 100%;
     flex-wrap: wrap;
@@ -177,13 +174,11 @@ select:hover {
 
 .article-text {
     width: 500px;
-    height: 42px;
     
     font-family: var(--rlm-font);
     font-style: normal;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 18px;
-    line-height: 21px;
     align-items: center;
     text-decoration: none;
     
@@ -197,11 +192,10 @@ select:hover {
 
 .featured-text {
     width: 227px;
-    height: 42px;
     
     font-family: var(--rlm-font);
     font-style: normal;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 18px;
     line-height: 21px;
     align-items: center;
@@ -232,7 +226,6 @@ select:hover {
     gap: 10px;
     
     width: 300px;
-    height: 25px;
         
     flex: none;
     order: 1;
@@ -245,7 +238,8 @@ select:hover {
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
-    line-height: 17px;
+
+    opacity: .8;
     
     display: flex;
     align-items: center;
@@ -289,8 +283,8 @@ select:hover {
 }
 
 .featured-thumbnail {
-    width: 227px;
-    height: 115px;
+    width: 237px;
+    height: 130px;
 
     background: url(image.png);
     border-radius: 6px;
@@ -311,7 +305,6 @@ select:hover {
     gap: 8px;
     
     width: 227px;
-    height: 90px;
         
     flex: none;
     order: 1;
@@ -332,7 +325,7 @@ select:hover {
 
   background-color: var(--rlm-card-color);
   font-size: 8px;
-  font-weight: 600;
+  font-weight: 500;
   border: 1px;
   border-radius: 6px;
   text-align: center;
@@ -347,7 +340,7 @@ select:hover {
 
 <body>
   <main>
-      <h1 id="featured-header">Featured</h2>
+      <h1 id="featured-header">Featured</h1>
       <div id="featured-list"></div>
       <select id="dateChooser" onchange="filterByDate();">
         <option value="Chrono">Chronological</option>
