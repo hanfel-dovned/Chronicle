@@ -247,19 +247,16 @@
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
-  ~&  "got subscribe"
   ?+    path  (on-watch:def path)
       [%http-response *]
     `this
     ::
       [%updates @ @ ~]
-      ~&  "got update"
     ?<  =(src.bowl our.bowl)
     ::  Need to check here if person requesting
     ::  is actually a member of this space.
     ::  Scry spaces agent for members and compare.
     =/  links  (get-links-by-space:hc newsfeed [(slav %p +6:path) +14:path])
-    ~&  "got links"
     :_  this
     %+  turn  links
     |=  =link:chronicle

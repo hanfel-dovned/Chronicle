@@ -1,16 +1,14 @@
 <head>
   <style>
 body {
-    overflow-y: scroll;
-    
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 4px 16px 16px;
+    padding: 16px 16px 16px 16px;
     gap: 7px;
     
-    width: 778px;
-    height: 554px;
+    width: calc(100% - 16px);
+    height: 100vh;
         
     flex: none;
     order: 1;
@@ -19,19 +17,22 @@ body {
 
     margin:auto;
 
-    background-color: var(--rlm-card-color);
+    background-color: var(--rlm-window-color);
 }
 
 main {
+    overflow-y: auto;
+    height: 100vh;
+
     box-sizing: border-box;
     
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 16px;
+    padding: 16px 16px 16px 16px;
     gap: 20px;
     
-    width: 746px;
+    width: 100%;
     
     background: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.09);
@@ -41,6 +42,8 @@ main {
     order: 0;
     align-self: stretch;
     flex-grow: 1;
+
+    background-color: var(--rlm-card-color);
 }
 
 h1 {
@@ -56,7 +59,7 @@ h1 {
     align-items: left;
     text-align: left;
     
-    color: rgba(51, 51, 51, 0.9);
+    color: var(--rlm-text-color);
         
     flex: none;
     order: 0;
@@ -76,7 +79,7 @@ select {
 }
 
 select:hover {
-    color: #777777;
+    color: #919191;
 }
 
 .title {
@@ -160,12 +163,16 @@ select:hover {
     align-items: center;
     text-decoration: none;
     
-    color: #333333;
+    color: var(--rlm-text-color);
 
     white-space: nowrap;
     text-overflow: ellipsis;
     display: block;
     overflow: hidden
+}
+
+.article-text:hover {
+    color: #919191;
 }
 
 .featured-text {
@@ -180,7 +187,7 @@ select:hover {
     align-items: center;
     text-decoration: none;
     
-    color: #333333;
+    color: var(--rlm-text-color);
 
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -189,11 +196,11 @@ select:hover {
 }
 
 .featured-text:hover {
-    color: #777777;
+    color: #919191;
 }
 
 .article-text:hover {
-    color: #777777;
+    color: #919191;
 }
 
 .article-meta {    
@@ -223,7 +230,7 @@ select:hover {
     display: flex;
     align-items: center;
     
-    color: rgba(51, 51, 51, 0.7);
+    color: var(--rlm-text-color);
         
     flex: none;
     order: 0;
@@ -349,13 +356,6 @@ function daToDate(st) {
   return new Date(ds);
 }
 
-function post(tag, data) {
-    fetch('/apps/chronicle', {
-        method: 'POST',
-        body: JSON.stringify({[tag]: data})
-    })
-    location.reload()
-}
 
 function postSave(date)
 {
@@ -456,12 +456,20 @@ async function renderPage(links)
 
     for(var i = 0; i < links.length; i++)
     {
-        links[i].push(i)    //trueIndex
-        links[i].push(links[i][datei])  //original date
+        links[i].push(0)    //trueIndex - indexi
+        links[i].push(links[i][datei])  //original date - ogdatei
         links[i][datei] = daToDate(links[i][datei])    //visually friendly date
+        
+        if(links[i][imgurli] == '')
+            links[i][imgurli] = defaultThumbnails[Math.floor(Math.random()*defaultThumbnails.length)]
     }
 
     links.sort(sortByDate);
+
+    for(var i = 0; i < links.length; i++)
+        links[i][indexi] = i;    //trueIndex - indexi
+
+    console.log(links);
 
     originalLinks = links;
     currentLinks = filterLinks(originalLinks, activeSpace);
@@ -492,10 +500,7 @@ function displayFeed(links) {
 
             const thumbnail = document.createElement("img");
                 thumbnail.classList.add("featured-thumbnail");
-                if(links[i][imgurli] != '')
-                    thumbnail.setAttribute('src', links[i][imgurli]);
-                else
-                    thumbnail.setAttribute('src', defaultThumbnails[Math.floor(Math.random()*defaultThumbnails.length)]);
+                thumbnail.setAttribute('src', links[i][imgurli]);
             newArticle.appendChild(thumbnail);
 
             articleTextBox = createArticleTextBox(links, i, 1);
@@ -512,10 +517,7 @@ function displayFeed(links) {
 
             const thumbnail = document.createElement("img");
                 thumbnail.classList.add("thumbnail");
-                if(links[i][imgurli] != '')
-                    thumbnail.setAttribute('src', links[i][imgurli]);
-                else
-                    thumbnail.setAttribute('src', defaultThumbnails[Math.floor(Math.random()*defaultThumbnails.length)]);
+                thumbnail.setAttribute('src', links[i][imgurli]);
             newArticle.appendChild(thumbnail);
 
             articleTextBox = createArticleTextBox(links, i, 0);
@@ -599,39 +601,39 @@ function createButtonHolder(links, i){
     buttonHolder.appendChild(saveButton);
 
 
-        const likeButton = document.createElement("button");
-            likeButton.classList.add("button");
+    const likeButton = document.createElement("button");
+        likeButton.classList.add("button");
 
-            if(links[i][likedi] == 0 && links[i][dislikedi] == 0)
-                likeButton.classList.add("like-button");
-            else
-                likeButton.classList.add("invisible-button");
+        if(links[i][likedi] == 0 && links[i][dislikedi] == 0)
+            likeButton.classList.add("like-button");
+        else
+            likeButton.classList.add("invisible-button");
 
-            likeButton.trueIndex = links[i][indexi];
-            likeButton.liked = links[i][likedi];
-            if(likeButton.liked == 0)
-                likeButton.textContent = "Like"; // (" + links[i][likesi] + ")";
-            else
-                likeButton.textContent = "Liked"; // (" + links[i][likesi] + ")";
-            likeButton.addEventListener('click', like);
-        buttonHolder.appendChild(likeButton);
+        likeButton.trueIndex = links[i][indexi];
+        likeButton.liked = links[i][likedi];
+        if(likeButton.liked == 0)
+            likeButton.textContent = "Like"; // (" + links[i][likesi] + ")";
+        else
+            likeButton.textContent = "Liked"; // (" + links[i][likesi] + ")";
+        likeButton.addEventListener('click', like);
+    buttonHolder.appendChild(likeButton);
 
-        const dislikeButton = document.createElement("button");
-            dislikeButton.classList.add("button");
+    const dislikeButton = document.createElement("button");
+        dislikeButton.classList.add("button");
 
-            if(links[i][likedi] == 0 && links[i][dislikedi] == 0)
-                dislikeButton.classList.add("dislike-button");
-            else
-                dislikeButton.classList.add("invisible-button");
+        if(links[i][likedi] == 0 && links[i][dislikedi] == 0)
+            dislikeButton.classList.add("dislike-button");
+        else
+            dislikeButton.classList.add("invisible-button");
 
-            dislikeButton.trueIndex = links[i][indexi];
-            dislikeButton.disliked = links[i][dislikedi];
-            if(dislikeButton.disliked == 0)
-                dislikeButton.textContent = "Dislike"; //(" + links[i][dislikesi] + ")";
-            else
-                dislikeButton.textContent = "Disliked"; // (" + links[i][dislikesi] + ")";
-            dislikeButton.addEventListener('click', dislike);
-        buttonHolder.appendChild(dislikeButton);
+        dislikeButton.trueIndex = links[i][indexi];
+        dislikeButton.disliked = links[i][dislikedi];
+        if(dislikeButton.disliked == 0)
+            dislikeButton.textContent = "Dislike"; //(" + links[i][dislikesi] + ")";
+        else
+            dislikeButton.textContent = "Disliked"; // (" + links[i][dislikesi] + ")";
+        dislikeButton.addEventListener('click', dislike);
+    buttonHolder.appendChild(dislikeButton);
 
     return buttonHolder;
 }
@@ -661,6 +663,9 @@ function save(){
         event.currentTarget.saved = 0;
         originalLinks[index][savedi] = false;
     }
+
+    currentLinks = filterLinks(originalLinks, activeSpace);
+    displayFeed(currentLinks);
 }
 
 function like(){
@@ -750,6 +755,9 @@ function feature(){
         event.currentTarget.featured = 0;
         originalLinks[index][featured] = false;
     }
+
+    currentLinks = filterLinks(originalLinks, activeSpace);
+    displayFeed(currentLinks);
 }
 
 function filterLinks(links, group) {
