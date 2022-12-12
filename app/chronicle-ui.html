@@ -323,21 +323,22 @@ select:hover {
   width: 25%; /* adjust as needed to make the buttons the desired size */
   height: 20px; /* adjust as needed to make the buttons the desired size */
 
-  color: white;
+  color: var(--rlm-text-color);
   font-size: 8px;
+  font-weight: 600;
   border: 1px;
   border-radius: 6px;
   text-align: center;
 }
 
-.save-button {background-color: #65af68;}
-.save-button:hover { background-color: #3e8d40;}
-.like-button {background-color: #6ca3fb;}
-.like-button:hover { background-color: #3f87fa;}
-.dislike-button {background-color: #f24d4d;}
-.dislike-button:hover { background-color: #d42424; }
-.feature-button {background-color: #b847af;}
-.feature-button:hover { background-color: #ad009f; }
+.save-button {background-color: var(--rlm-icon-color);}
+.save-button:hover { background-color: #919191;}
+.like-button {background-color: var(--rlm-icon-color);}
+.like-button:hover { background-color: #919191;}
+.dislike-button {background-color: var(--rlm-icon-color);}
+.dislike-button:hover { background-color: #919191;}
+.feature-button {background-color: var(--rlm-icon-color);}
+.feature-button:hover { background-color: #919191;}
 .invisible-button {background-color: #ffffff00; color: #ffffff00}
 
 
@@ -737,11 +738,11 @@ function dislike(){
     var buttonHolder = this.closest(".button-holder");
 
     // Find the Dislike button inside the button-holder element
-    var dislikeButton = buttonHolder.querySelector(".like-button");
+    var likeButton = buttonHolder.querySelector(".like-button");
 
     // Add the invisible-button class to the Dislike button
-    dislikeButton.classList.remove("like-button");
-    dislikeButton.classList.add("invisible-button");
+    likeButton.classList.remove("like-button");
+    likeButton.classList.add("invisible-button");
 
     event.currentTarget.disliked = 1;
     originalLinks[index][dislikedi] = true;
@@ -764,13 +765,13 @@ function feature(){
     {
         event.currentTarget.textContent = "Featured";
         event.currentTarget.featured = 1;
-        originalLinks[index][featured] = true;
+        originalLinks[index][featuredi] = true;
     }
     else
     {
         event.currentTarget.textContent = "Feature";
         event.currentTarget.featured = 0;
-        originalLinks[index][featured] = false;
+        originalLinks[index][featuredi] = false;
     }
 
     currentLinks = filterLinks(originalLinks, activeSpace);
@@ -845,6 +846,5 @@ function sortByLikes(a, b) {
 }
 
       </script>
-    <div></div>
   </main>
 </body>
