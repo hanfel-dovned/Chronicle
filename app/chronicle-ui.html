@@ -56,22 +56,14 @@ main {
 
 h1 {
     width: 500px;
-    height: 21px;
     
     font-family: var(--rlm-font);
     font-style: normal;
     font-weight: 500;
     font-size: 24px;
-    line-height: 21px;
-    display: flex;
-    align-items: left;
-    text-align: left;
     
     color: var(--rlm-text-color);
-        
-    flex: none;
-    order: 0;
-    flex-grow: 0;
+
 }
 
 select {
@@ -130,7 +122,7 @@ select:hover {
     flex-direction: row;
     align-items: flex-start;
     padding: 0px;
-    gap: 5px 28px;
+    gap: 7px 32px;
 
     width: 100%;
     flex-wrap: wrap;
@@ -801,10 +793,6 @@ function filterByDate() {
                 dateLinks.push(currentLinks[i])
         }
     }
-
-    //if(timeframe == "Chrono")
-    //  dateLinks.sort(sortByDate);
-    // currentLinks should already be sorted by date, so these will be too
 
     if(timeframe != "Chrono")
       dateLinks.sort(sortByLikes);
